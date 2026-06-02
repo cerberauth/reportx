@@ -1,0 +1,142 @@
+[
+  {
+    "id": "CWE-22",
+    "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
+    "short_name": "Path Traversal",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-78",
+    "name": "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')",
+    "short_name": "OS Command Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-79",
+    "name": "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')",
+    "short_name": "XSS",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-89",
+    "name": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')",
+    "short_name": "SQL Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-94",
+    "name": "Improper Control of Generation of Code ('Code Injection')",
+    "short_name": "Code Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-200",
+    "name": "Exposure of Sensitive Information to an Unauthorized Actor",
+    "short_name": "Exposure of Sensitive Information",
+    "owasp_2021": "A02:2021",
+    "owasp_2025": "A02:2025"
+  },
+  {
+    "id": "CWE-284",
+    "name": "Improper Access Control",
+    "short_name": "Improper Access Control",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-287",
+    "name": "Improper Authentication",
+    "short_name": "Improper Authentication",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
+  },
+  {
+    "id": "CWE-307",
+    "name": "Improper Restriction of Excessive Authentication Attempts",
+    "short_name": "Improper Restriction of Excessive Authentication Attempts",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
+  },
+  {
+    "id": "CWE-319",
+    "name": "Cleartext Transmission of Sensitive Information",
+    "short_name": "Cleartext Transmission of Sensitive Information",
+    "owasp_2021": "A02:2021",
+    "owasp_2025": "A02:2025"
+  },
+  {
+    "id": "CWE-327",
+    "name": "Use of a Broken or Risky Cryptographic Algorithm",
+    "short_name": "Use of a Broken or Risky Cryptographic Algorithm",
+    "owasp_2021": "A02:2021",
+    "owasp_2025": "A02:2025"
+  },
+  {
+    "id": "CWE-352",
+    "name": "Cross-Site Request Forgery (CSRF)",
+    "short_name": "CSRF",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-400",
+    "name": "Uncontrolled Resource Consumption",
+    "short_name": "Uncontrolled Resource Consumption",
+    "owasp_2021": "A05:2021",
+    "owasp_2025": "A06:2025"
+  },
+  {
+    "id": "CWE-434",
+    "name": "Unrestricted Upload of File with Dangerous Type",
+    "short_name": "Unrestricted Upload of File with Dangerous Type",
+    "owasp_2021": "A04:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-502",
+    "name": "Deserialization of Untrusted Data",
+    "short_name": "Deserialization of Untrusted Data",
+    "owasp_2021": "A08:2021",
+    "owasp_2025": "A04:2025"
+  },
+  {
+    "id": "CWE-601",
+    "name": "URL Redirection to Untrusted Site ('Open Redirect')",
+    "short_name": "URL Redirection to Untrusted Site",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-611",
+    "name": "Improper Restriction of XML External Entity Reference",
+    "short_name": "XML External Entity Reference",
+    "owasp_2021": "A05:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-770",
+    "name": "Allocation of Resources Without Limits or Throttling",
+    "short_name": "Allocation of Resources Without Limits or Throttling",
+    "owasp_2021": "A05:2021",
+    "owasp_2025": "A06:2025"
+  },
+  {
+    "id": "CWE-798",
+    "name": "Use of Hard-coded Credentials",
+    "short_name": "Use of Hard-coded Credentials",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
+  },
+  {
+    "id": "CWE-918",
+    "name": "Server-Side Request Forgery (SSRF)",
+    "short_name": "SSRF",
+    "owasp_2021": "A10:2021",
+    "owasp_2025": "A09:2025"
+  }
+]
