@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 	"github.com/cerberauth/reportx/format"
 )
 
@@ -234,7 +235,7 @@ func TestHTMLEvidenceInNestedDetails(t *testing.T) {
 		ScanDate: time.Now(),
 		Findings: []reportx.Finding{{
 			ID: "1", Title: "T", Severity: reportx.SeverityHigh, Status: reportx.StatusActive,
-			Evidence: reportx.Evidence{
+			Evidence: &evidence.HTTPEvidence{
 				RawRequest:  "GET / HTTP/1.1",
 				RawResponse: "HTTP/1.1 200 OK",
 			},

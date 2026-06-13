@@ -14,6 +14,7 @@ import (
 	"github.com/cerberauth/reportx"
 	"github.com/cerberauth/reportx/dedup"
 	"github.com/cerberauth/reportx/enrich"
+	"github.com/cerberauth/reportx/evidence"
 	"github.com/cerberauth/reportx/format"
 )
 
@@ -66,7 +67,7 @@ func run() error {
 			CWEID:        "CWE-89",
 			URL:          loginURL,
 			Parameter:    "username",
-			Evidence: reportx.Evidence{
+			Evidence: &evidence.HTTPEvidence{
 				RawRequest:     "POST /auth/login HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{\"username\":\"' OR 1=1--\",\"password\":\"x\"}",
 				RawResponse:    "HTTP/1.1 500 Internal Server Error\r\n\r\nSQLite error: near \"OR\": syntax error",
 				RequestMethod:  "POST",
@@ -101,7 +102,7 @@ func run() error {
 			CWEID:       "CWE-79",
 			URL:         "https://api.example.com/search",
 			Parameter:   "q",
-			Evidence: reportx.Evidence{
+			Evidence: &evidence.HTTPEvidence{
 				RawRequest:     "GET /search?q=<script>alert(document.domain)</script> HTTP/1.1",
 				RawResponse:    "HTTP/1.1 200 OK\r\n\r\n...search: <script>alert(document.domain)</script>...",
 				RequestMethod:  "GET",

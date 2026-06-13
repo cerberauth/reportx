@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 	"github.com/cerberauth/reportx/format"
 	"github.com/cerberauth/reportx/internal/testdata"
 )
@@ -190,7 +191,7 @@ func TestJSONEvidencePartial(t *testing.T) {
 		ScanDate: time.Now(),
 		Findings: []reportx.Finding{{
 			ID: "p1", Title: "T", Severity: reportx.SeverityLow, Status: reportx.StatusActive,
-			Evidence: reportx.Evidence{RawRequest: "GET / HTTP/1.1"},
+			Evidence: &evidence.HTTPEvidence{RawRequest: "GET / HTTP/1.1"},
 		}},
 	}
 	data, _ := format.NewJSONFormatter().Format(r)

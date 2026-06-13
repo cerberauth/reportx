@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 	"github.com/cerberauth/reportx/format"
 	"github.com/cerberauth/reportx/internal/testdata"
 )
@@ -51,7 +52,7 @@ func richFinding() reportx.Finding {
 		OwaspTop10:      "A03:2021 – Injection",
 		URL:             "https://api.example.com/users",
 		Parameter:       "id",
-		Evidence:        reportx.Evidence{RawRequest: "GET /users?id=1' HTTP/1.1", RawResponse: "HTTP/1.1 500 Internal Server Error"},
+		Evidence:        &evidence.HTTPEvidence{RawRequest: "GET /users?id=1' HTTP/1.1", RawResponse: "HTTP/1.1 500 Internal Server Error"},
 		Description:     "SQL injection via the id parameter.",
 		Remediation:     "Use parameterized queries.",
 		FirstSeen:       t,

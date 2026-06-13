@@ -9,13 +9,14 @@ go get github.com/cerberauth/reportx
 ## Guides
 
 - [API Reference](api-reference.md) — `Finding`, `Report`, `Builder`, `Formatter`, `Transport`
+- [Evidence](evidence.md) — `HTTPEvidence`, `CustomEvidence`, custom evidence types
 - [Formatters](formatters.md) — JSON, JSONL, SARIF, Markdown, HTML, Terminal, CLIFlags
 - [Transports](transports.md) — `FSTransport`, `HTTPTransport`, custom transports
 - [CWE Enrichment](enrichment.md) — auto-fill `CWEName` and `OwaspTop10`
 - [Deduplication](deduplication.md) — fingerprinting and duplicate removal
 - [CVSS Scoring](cvss.md) — CVSS 3.1 and 4.0 base score calculation
 - [OpenTelemetry](otel.md) — spans, attributes, setup
-- [Extending](extending.md) — custom formatters, transports, enrichment, dedup
+- [Extending](extending.md) — custom formatters, transports, enrichment, dedup, evidence
 
 ## Quick start
 
@@ -72,6 +73,7 @@ func main() {
 | Package | Purpose |
 |---------|---------|
 | `github.com/cerberauth/reportx` | Core types: `Finding`, `Report`, `Builder` |
+| `github.com/cerberauth/reportx/evidence` | `HTTPEvidence`, `CustomEvidence` |
 | `github.com/cerberauth/reportx/format` | All formatters + `CLIFlags` helper |
 | `github.com/cerberauth/reportx/transport` | `FSTransport`, `HTTPTransport` |
 | `github.com/cerberauth/reportx/enrich` | CWE name and OWASP Top 10 enrichment |

@@ -29,7 +29,7 @@ type Finding struct {
     Parameter string // query/body parameter, header name, etc.
 
     // Evidence
-    Evidence Evidence // raw or structured HTTP traffic
+    Evidence Evidence // any evidence.HTTPEvidence, evidence.CustomEvidence, or custom type
 
     // Narrative
     Description string // what was found and why it matters
@@ -70,29 +70,36 @@ StatusMitigated     Status = "mitigated"
 
 ### Evidence
 
-Structured HTTP traffic attached to a finding. Either use the raw string fields or the structured fields — both are supported.
+`Evidence` is an interface. Assign any value from the `evidence` sub-package (or your own type) to `Finding.Evidence`.
 
 ```go
-type Evidence struct {
-    // Raw strings
-    RawRequest  string // full HTTP request as text
-    RawResponse string // full HTTP response as text
-
-    // Structured
-    RequestMethod   string
-    RequestURL      string
-    RequestBody     []byte
-    ResponseStatus  int
-    ResponseHeaders map[string][]string
-    ResponseBody    []byte
+type Evidence interface {
+    IsEmpty() bool
 }
 ```
 
-Helper methods:
+See [Evidence](evidence.md) for the full reference on `HTTPEvidence`, `CustomEvidence`, and custom types.
+
+Quick examples:
 
 ```go
-func (e Evidence) IsEmpty() bool        // true when no field is set
-func (e Evidence) HasStructured() bool  // true when any structured field is set
+import "github.com/cerberauth/reportx/evidence"
+
+// HTTP finding
+finding.Evidence = &evidence.HTTPEvidence{
+    RequestMethod:  "POST",
+    RequestURL:     "https://api.example.com/login",
+    ResponseStatus: 500,
+    RequestBody:    []byte(`{"username":"' OR 1=1--"}`),
+}
+
+// Non-HTTP finding
+finding.Evidence = &evidence.CustomEvidence{
+    Data: map[string]any{
+        "payload": `{"__proto__":{"admin":true}}`,
+        "timing":  "4.2s",
+    },
+}
 ```
 
 ---

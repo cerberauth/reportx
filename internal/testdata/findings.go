@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 )
 
 func Fixtures() []reportx.Finding {
@@ -19,7 +20,7 @@ func Fixtures() []reportx.Finding {
 			CWEID:        "CWE-89",
 			URL:          "https://api.example.com/auth/login",
 			Parameter:    "username",
-			Evidence: reportx.Evidence{
+			Evidence: &evidence.HTTPEvidence{
 				RawRequest:     "POST /auth/login HTTP/1.1\r\nContent-Type: application/json\r\n\r\n{\"username\":\"' OR 1=1--\"}",
 				RawResponse:    "HTTP/1.1 500 Internal Server Error\r\n\r\nSQLite error: syntax error",
 				RequestMethod:  "POST",
@@ -44,7 +45,7 @@ func Fixtures() []reportx.Finding {
 			CWEID:       "CWE-79",
 			URL:         "https://api.example.com/search",
 			Parameter:   "q",
-			Evidence: reportx.Evidence{
+			Evidence: &evidence.HTTPEvidence{
 				RawRequest:     "GET /search?q=<script>alert(1)</script> HTTP/1.1",
 				RawResponse:    "HTTP/1.1 200 OK\r\n\r\n<html>...search: <script>alert(1)</script>...",
 				RequestMethod:  "GET",

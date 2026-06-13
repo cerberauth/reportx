@@ -21,24 +21,8 @@ const (
 	StatusMitigated     Status = "mitigated"
 )
 
-type Evidence struct {
-	RawRequest      string
-	RawResponse     string
-	RequestMethod   string
-	RequestURL      string
-	ResponseStatus  int
-	ResponseHeaders map[string][]string
-	RequestBody     []byte
-	ResponseBody    []byte
-}
-
-func (e Evidence) HasStructured() bool {
-	return e.RequestMethod != "" || e.RequestURL != "" || e.ResponseStatus != 0 ||
-		len(e.ResponseHeaders) > 0 || len(e.RequestBody) > 0 || len(e.ResponseBody) > 0
-}
-
-func (e Evidence) IsEmpty() bool {
-	return e.RawRequest == "" && e.RawResponse == "" && !e.HasStructured()
+type Evidence interface {
+	IsEmpty() bool
 }
 
 type Finding struct {
