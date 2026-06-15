@@ -170,6 +170,42 @@ import "github.com/cerberauth/reportx/enrich"
 enriched := enrich.EnrichAll(findings) // returns new slice, original unchanged
 ```
 
+## Evidence
+
+Attach evidence to any finding using the `evidence` sub-package. Two built-in types:
+
+```go
+import "github.com/cerberauth/reportx/evidence"
+
+// HTTP request/response
+finding.Evidence = &evidence.HTTPEvidence{
+    RequestMethod:  "POST",
+    RequestURL:     "https://api.example.com/login",
+    ResponseStatus: 500,
+    RequestBody:    []byte(`{"username":"' OR 1=1--"}`),
+    ResponseBody:   []byte("SQLite error: syntax error"),
+}
+
+// Any non-HTTP data
+finding.Evidence = &evidence.CustomEvidence{
+    Data: map[string]any{
+        "payload": `{"__proto__":{"admin":true}}`,
+        "timing":  "4.2s",
+    },
+}
+```
+
+`HTTPEvidence` also accepts raw strings if structured fields are unavailable:
+
+```go
+finding.Evidence = &evidence.HTTPEvidence{
+    RawRequest:  "GET /users?id=1' HTTP/1.1\r\nHost: api.example.com",
+    RawResponse: "HTTP/1.1 500 Internal Server Error\r\n\r\nSQLite error: syntax error",
+}
+```
+
+Implement `IsEmpty() bool` on any struct to use it as a custom evidence type.
+
 ## Extending reportx
 
 Implement the `format.Formatter` interface to add a custom output format:

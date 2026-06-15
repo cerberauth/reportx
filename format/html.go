@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 )
 
 type HTMLFormatter struct{}
@@ -165,24 +166,46 @@ func writeHTMLFinding(buf *bytes.Buffer, f reportx.Finding, color string) {
 	if f.Remediation != "" {
 		fmt.Fprintf(buf, "<div class=\"prose\"><h4>Remediation</h4><p>%s</p></div>\n", html.EscapeString(f.Remediation))
 	}
-	if !f.Evidence.IsEmpty() {
-		buf.WriteString("<details><summary>Evidence</summary>\n")
-		if f.Evidence.HasStructured() {
-			writeHTMLEvidenceStructured(buf, f.Evidence)
-		} else {
-			if f.Evidence.RawRequest != "" {
-				fmt.Fprintf(buf, "<pre>%s</pre>\n", html.EscapeString(f.Evidence.RawRequest))
+	switch ev := f.Evidence.(type) {
+	case *evidence.HTTPEvidence:
+		if !ev.IsEmpty() {
+			buf.WriteString("<details><summary>Evidence</summary>\n")
+			if ev.HasStructured() {
+				writeHTMLEvidenceStructured(buf, ev)
+			} else {
+				if ev.RawRequest != "" {
+					fmt.Fprintf(buf, "<pre>%s</pre>\n", html.EscapeString(ev.RawRequest))
+				}
+				if ev.RawResponse != "" {
+					fmt.Fprintf(buf, "<pre>%s</pre>\n", html.EscapeString(ev.RawResponse))
+				}
 			}
-			if f.Evidence.RawResponse != "" {
-				fmt.Fprintf(buf, "<pre>%s</pre>\n", html.EscapeString(f.Evidence.RawResponse))
-			}
+			buf.WriteString("</details>\n")
 		}
-		buf.WriteString("</details>\n")
+	case *evidence.CustomEvidence:
+		if !ev.IsEmpty() {
+			buf.WriteString("<details><summary>Evidence</summary>\n")
+			writeHTMLEvidenceCustom(buf, ev)
+			buf.WriteString("</details>\n")
+		}
 	}
 	buf.WriteString("</div>\n</details>\n")
 }
 
-func writeHTMLEvidenceStructured(buf *bytes.Buffer, e reportx.Evidence) {
+func writeHTMLEvidenceCustom(buf *bytes.Buffer, e *evidence.CustomEvidence) {
+	keys := make([]string, 0, len(e.Data))
+	for k := range e.Data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	buf.WriteString("<dl>\n")
+	for _, k := range keys {
+		fmt.Fprintf(buf, "<dt>%s</dt><dd>%s</dd>\n", html.EscapeString(k), html.EscapeString(fmt.Sprintf("%v", e.Data[k])))
+	}
+	buf.WriteString("</dl>\n")
+}
+
+func writeHTMLEvidenceStructured(buf *bytes.Buffer, e *evidence.HTTPEvidence) {
 	if e.RequestMethod != "" || e.RequestURL != "" {
 		method := html.EscapeString(e.RequestMethod)
 		u := html.EscapeString(e.RequestURL)

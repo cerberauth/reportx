@@ -120,3 +120,49 @@ report, err := reportx.NewBuilder().
     Deduplicate(myDedup).
     Build(ctx)
 ```
+
+---
+
+## Custom evidence type
+
+`Finding.Evidence` accepts any type that implements `reportx.Evidence`:
+
+```go
+type Evidence interface {
+    IsEmpty() bool
+}
+```
+
+Example — attach a binary diff as evidence:
+
+```go
+type BinaryDiffEvidence struct {
+    Before []byte
+    After  []byte
+}
+
+func (e *BinaryDiffEvidence) IsEmpty() bool {
+    return len(e.Before) == 0 && len(e.After) == 0
+}
+
+finding.Evidence = &BinaryDiffEvidence{
+    Before: originalBytes,
+    After:  mutatedBytes,
+}
+```
+
+Built-in formatters render nothing for unknown evidence types (no panic). To render your custom type, implement a custom formatter that type-asserts `f.Evidence`:
+
+```go
+func (f *MyFormatter) Format(r *reportx.Report) ([]byte, error) {
+    for _, finding := range r.Findings {
+        switch ev := finding.Evidence.(type) {
+        case *evidence.HTTPEvidence:
+            // HTTP rendering
+        case *BinaryDiffEvidence:
+            // binary diff rendering
+        }
+    }
+    // ...
+}
+```

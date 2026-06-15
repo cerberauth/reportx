@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 )
 
 type MarkdownFormatter struct{}
@@ -104,27 +105,49 @@ func writeFindingMD(buf *bytes.Buffer, f reportx.Finding) {
 		fmt.Fprintf(buf, "**Remediation**\n\n%s\n\n", f.Remediation)
 	}
 
-	if !f.Evidence.IsEmpty() {
-		buf.WriteString("<details><summary>Evidence</summary>\n\n")
-		if f.Evidence.HasStructured() {
-			writeMarkdownEvidenceStructured(buf, f.Evidence)
-		} else {
-			if f.Evidence.RawRequest != "" {
-				buf.WriteString("```http\n")
-				buf.WriteString(f.Evidence.RawRequest)
-				buf.WriteString("\n```\n\n")
+	switch ev := f.Evidence.(type) {
+	case *evidence.HTTPEvidence:
+		if !ev.IsEmpty() {
+			buf.WriteString("<details><summary>Evidence</summary>\n\n")
+			if ev.HasStructured() {
+				writeMarkdownEvidenceStructured(buf, ev)
+			} else {
+				if ev.RawRequest != "" {
+					buf.WriteString("```http\n")
+					buf.WriteString(ev.RawRequest)
+					buf.WriteString("\n```\n\n")
+				}
+				if ev.RawResponse != "" {
+					buf.WriteString("```http\n")
+					buf.WriteString(ev.RawResponse)
+					buf.WriteString("\n```\n\n")
+				}
 			}
-			if f.Evidence.RawResponse != "" {
-				buf.WriteString("```http\n")
-				buf.WriteString(f.Evidence.RawResponse)
-				buf.WriteString("\n```\n\n")
-			}
+			buf.WriteString("</details>\n\n")
 		}
-		buf.WriteString("</details>\n\n")
+	case *evidence.CustomEvidence:
+		if !ev.IsEmpty() {
+			buf.WriteString("<details><summary>Evidence</summary>\n\n")
+			writeMarkdownEvidenceCustom(buf, ev)
+			buf.WriteString("</details>\n\n")
+		}
 	}
 }
 
-func writeMarkdownEvidenceStructured(buf *bytes.Buffer, e reportx.Evidence) {
+func writeMarkdownEvidenceCustom(buf *bytes.Buffer, e *evidence.CustomEvidence) {
+	keys := make([]string, 0, len(e.Data))
+	for k := range e.Data {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	buf.WriteString("| Key | Value |\n|-----|-------|\n")
+	for _, k := range keys {
+		fmt.Fprintf(buf, "| %s | %s |\n", k, fmt.Sprintf("%v", e.Data[k]))
+	}
+	buf.WriteString("\n")
+}
+
+func writeMarkdownEvidenceStructured(buf *bytes.Buffer, e *evidence.HTTPEvidence) {
 	if e.RequestMethod != "" || e.RequestURL != "" {
 		fmt.Fprintf(buf, "```http\n%s %s\n```\n\n", e.RequestMethod, e.RequestURL)
 	}

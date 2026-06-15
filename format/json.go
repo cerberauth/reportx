@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 )
 
 type JSONFormatter struct{}
@@ -35,7 +36,7 @@ type jsonFinding struct {
 	OwaspTop10      string            `json:"owasp_top10,omitempty"`
 	URL             string            `json:"url,omitempty"`
 	Parameter       string            `json:"parameter,omitempty"`
-	Evidence        *jsonEvidence     `json:"evidence,omitempty"`
+	Evidence        any               `json:"evidence,omitempty"`
 	Description     string            `json:"description,omitempty"`
 	Remediation     string            `json:"remediation,omitempty"`
 	FirstSeen       string            `json:"first_seen,omitempty"`
@@ -89,17 +90,23 @@ func toJSONFinding(f reportx.Finding) jsonFinding {
 	if !f.LastSeen.IsZero() {
 		jf.LastSeen = f.LastSeen.Format(time.RFC3339)
 	}
-	if !f.Evidence.IsEmpty() {
-		e := f.Evidence
-		jf.Evidence = &jsonEvidence{
-			RawRequest:      e.RawRequest,
-			RawResponse:     e.RawResponse,
-			RequestMethod:   e.RequestMethod,
-			RequestURL:      e.RequestURL,
-			ResponseStatus:  e.ResponseStatus,
-			ResponseHeaders: e.ResponseHeaders,
-			RequestBody:     string(e.RequestBody),
-			ResponseBody:    string(e.ResponseBody),
+	switch ev := f.Evidence.(type) {
+	case *evidence.HTTPEvidence:
+		if !ev.IsEmpty() {
+			jf.Evidence = &jsonEvidence{
+				RawRequest:      ev.RawRequest,
+				RawResponse:     ev.RawResponse,
+				RequestMethod:   ev.RequestMethod,
+				RequestURL:      ev.RequestURL,
+				ResponseStatus:  ev.ResponseStatus,
+				ResponseHeaders: ev.ResponseHeaders,
+				RequestBody:     string(ev.RequestBody),
+				ResponseBody:    string(ev.ResponseBody),
+			}
+		}
+	case *evidence.CustomEvidence:
+		if !ev.IsEmpty() {
+			jf.Evidence = ev.Data
 		}
 	}
 	return jf

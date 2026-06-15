@@ -3,10 +3,12 @@ package format
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/cerberauth/reportx"
+	"github.com/cerberauth/reportx/evidence"
 )
 
 const (
@@ -145,15 +147,31 @@ func (f *TerminalFormatter) writeFinding(w *bytes.Buffer, fi reportx.Finding) {
 		fmt.Fprintf(w, "    %s  %s\n", f.dim("Tags:     "), strings.Join(fi.Tags, ", "))
 	}
 
-	if fi.Evidence.HasStructured() {
-		if fi.Evidence.RequestMethod != "" || fi.Evidence.RequestURL != "" {
-			fmt.Fprintf(w, "    %s  %s %s", f.dim("Evidence: "), fi.Evidence.RequestMethod, fi.Evidence.RequestURL)
-			if fi.Evidence.ResponseStatus != 0 {
-				fmt.Fprintf(w, " → %d", fi.Evidence.ResponseStatus)
+	switch ev := fi.Evidence.(type) {
+	case *evidence.HTTPEvidence:
+		if ev.HasStructured() {
+			if ev.RequestMethod != "" || ev.RequestURL != "" {
+				fmt.Fprintf(w, "    %s  %s %s", f.dim("Evidence: "), ev.RequestMethod, ev.RequestURL)
+				if ev.ResponseStatus != 0 {
+					fmt.Fprintf(w, " → %d", ev.ResponseStatus)
+				}
+				fmt.Fprintln(w)
+			} else if ev.ResponseStatus != 0 {
+				fmt.Fprintf(w, "    %s  HTTP %d\n", f.dim("Evidence: "), ev.ResponseStatus)
 			}
-			fmt.Fprintln(w)
-		} else if fi.Evidence.ResponseStatus != 0 {
-			fmt.Fprintf(w, "    %s  HTTP %d\n", f.dim("Evidence: "), fi.Evidence.ResponseStatus)
+		}
+	case *evidence.CustomEvidence:
+		if !ev.IsEmpty() {
+			keys := make([]string, 0, len(ev.Data))
+			for k := range ev.Data {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+			parts := make([]string, 0, len(keys))
+			for _, k := range keys {
+				parts = append(parts, fmt.Sprintf("%s=%v", k, ev.Data[k]))
+			}
+			fmt.Fprintf(w, "    %s  %s\n", f.dim("Evidence: "), strings.Join(parts, " "))
 		}
 	}
 
