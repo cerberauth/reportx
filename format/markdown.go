@@ -11,9 +11,19 @@ import (
 	"github.com/cerberauth/reportx/evidence"
 )
 
-type MarkdownFormatter struct{}
+type MarkdownFormatter struct {
+	// ReferrerTag, when set, is appended as a "ref" query param to each
+	// finding's URL so clicks from the report can be attributed back.
+	ReferrerTag string
+}
 
 func NewMarkdownFormatter() *MarkdownFormatter { return &MarkdownFormatter{} }
+
+// NewMarkdownFormatterWithReferrerTag returns a MarkdownFormatter that
+// tags finding URLs with the given referrer tag (see ReferrerTag).
+func NewMarkdownFormatterWithReferrerTag(tag string) *MarkdownFormatter {
+	return &MarkdownFormatter{ReferrerTag: tag}
+}
 
 var severityOrder = []reportx.Severity{
 	reportx.SeverityCritical,
@@ -61,7 +71,7 @@ func (f *MarkdownFormatter) Format(r *reportx.Report) ([]byte, error) {
 		}
 		fmt.Fprintf(&buf, "## %s findings\n\n", capitalize(string(sev)))
 		for _, finding := range band {
-			writeFindingMD(&buf, finding)
+			writeFindingMD(&buf, finding, f.ReferrerTag)
 		}
 	}
 
@@ -70,12 +80,12 @@ func (f *MarkdownFormatter) Format(r *reportx.Report) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func writeFindingMD(buf *bytes.Buffer, f reportx.Finding) {
+func writeFindingMD(buf *bytes.Buffer, f reportx.Finding, referrerTag string) {
 	fmt.Fprintf(buf, "### %s\n\n", f.Title)
 
 	buf.WriteString("| Field | Value |\n|-------|-------|\n")
 	if f.URL != "" {
-		fmt.Fprintf(buf, "| URL | %s |\n", f.URL)
+		fmt.Fprintf(buf, "| URL | %s |\n", appendReferrerTag(f.URL, referrerTag))
 	}
 	if f.Parameter != "" {
 		fmt.Fprintf(buf, "| Parameter | `%s` |\n", f.Parameter)

@@ -12,9 +12,19 @@ import (
 	"github.com/cerberauth/reportx/evidence"
 )
 
-type HTMLFormatter struct{}
+type HTMLFormatter struct {
+	// ReferrerTag, when set, is appended as a "ref" query param to each
+	// finding's URL so clicks from the report can be attributed back.
+	ReferrerTag string
+}
 
 func NewHTMLFormatter() *HTMLFormatter { return &HTMLFormatter{} }
+
+// NewHTMLFormatterWithReferrerTag returns an HTMLFormatter that tags
+// finding URLs with the given referrer tag (see ReferrerTag).
+func NewHTMLFormatterWithReferrerTag(tag string) *HTMLFormatter {
+	return &HTMLFormatter{ReferrerTag: tag}
+}
 
 var htmlSeverityOrder = []reportx.Severity{
 	reportx.SeverityCritical,
@@ -111,7 +121,7 @@ func (f *HTMLFormatter) Format(r *reportx.Report) ([]byte, error) {
 		label := capitalize(string(sev))
 		fmt.Fprintf(&buf, "<div class=\"section\"><h2>%s Findings</h2>\n", label)
 		for _, finding := range band {
-			writeHTMLFinding(&buf, finding, color)
+			writeHTMLFinding(&buf, finding, color, f.ReferrerTag)
 		}
 		buf.WriteString("</div>\n")
 	}
@@ -121,13 +131,13 @@ func (f *HTMLFormatter) Format(r *reportx.Report) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func writeHTMLFinding(buf *bytes.Buffer, f reportx.Finding, color string) {
+func writeHTMLFinding(buf *bytes.Buffer, f reportx.Finding, color, referrerTag string) {
 	fmt.Fprintf(buf, "<details>\n<summary><span class=\"sev\" style=\"background:%s\">%s</span> %s</summary>\n",
 		color, strings.ToUpper(string(f.Severity)), html.EscapeString(f.Title),
 	)
 	buf.WriteString("<div class=\"finding-body\"><dl>\n")
 
-	writeHTMLDT(buf, "URL", f.URL)
+	writeHTMLDT(buf, "URL", appendReferrerTag(f.URL, referrerTag))
 	if f.Parameter != "" {
 		fmt.Fprintf(buf, "<dt>Parameter</dt><dd><code>%s</code></dd>\n", html.EscapeString(f.Parameter))
 	}
