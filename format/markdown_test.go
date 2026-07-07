@@ -286,3 +286,27 @@ func TestMarkdownEmptyReport(t *testing.T) {
 		}
 	}
 }
+
+func TestMarkdownReferrerTagAppendedToURL(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewMarkdownFormatterWithReferrerTag("myreport").Format(r)
+	if !strings.Contains(string(data), "https://api.example.com/users?ref=myreport") {
+		t.Error("URL should be tagged with ref query param")
+	}
+}
+
+func TestMarkdownNoReferrerTagByDefault(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewMarkdownFormatter().Format(r)
+	if strings.Contains(string(data), "ref=") {
+		t.Error("URL should not be tagged when ReferrerTag unset")
+	}
+}

@@ -33,11 +33,20 @@ var severityColor = map[reportx.Severity]string{
 
 type TerminalFormatter struct {
 	NoColor bool
+	// ReferrerTag, when set, is appended as a "ref" query param to each
+	// finding's URL so clicks from the report can be attributed back.
+	ReferrerTag string
 }
 
 func NewTerminalFormatter() *TerminalFormatter { return &TerminalFormatter{} }
 
 func NewTerminalFormatterNoColor() *TerminalFormatter { return &TerminalFormatter{NoColor: true} }
+
+// NewTerminalFormatterWithReferrerTag returns a TerminalFormatter that
+// tags finding URLs with the given referrer tag (see ReferrerTag).
+func NewTerminalFormatterWithReferrerTag(tag string) *TerminalFormatter {
+	return &TerminalFormatter{ReferrerTag: tag}
+}
 
 func (f *TerminalFormatter) color(code, s string) string {
 	if f.NoColor {
@@ -125,7 +134,7 @@ func (f *TerminalFormatter) writeFinding(w *bytes.Buffer, fi reportx.Finding) {
 	fmt.Fprintf(w, "  %s  %s\n", f.color(severityColor[fi.Severity], "■"), f.bold(fi.Title))
 
 	if fi.URL != "" {
-		fmt.Fprintf(w, "    %s  %s\n", f.dim("URL:      "), fi.URL)
+		fmt.Fprintf(w, "    %s  %s\n", f.dim("URL:      "), appendReferrerTag(fi.URL, f.ReferrerTag))
 	}
 	if fi.Parameter != "" {
 		fmt.Fprintf(w, "    %s  %s\n", f.dim("Parameter:"), fi.Parameter)

@@ -10,9 +10,12 @@ All formatters live in the `format` sub-package and implement `reportx.Formatter
 | `NewJSONLFormatter()` | JSONL | `application/x-ndjson` | `.jsonl` |
 | `NewSARIFFormatter()` | SARIF 2.1.0 | `application/sarif+json` | `.sarif.json` |
 | `NewMarkdownFormatter()` | Markdown | `text/markdown` | `.md` |
+| `NewMarkdownFormatterWithReferrerTag(tag)` | Markdown, URLs tagged with `?ref=tag` | `text/markdown` | `.md` |
 | `NewHTMLFormatter()` | HTML | `text/html` | `.html` |
+| `NewHTMLFormatterWithReferrerTag(tag)` | HTML, URLs tagged with `?ref=tag` | `text/html` | `.html` |
 | `NewTerminalFormatter()` | Terminal | `text/plain` | `.txt` |
 | `NewTerminalFormatterNoColor()` | Terminal (no ANSI) | `text/plain` | `.txt` |
+| `NewTerminalFormatterWithReferrerTag(tag)` | Terminal, URLs tagged with `?ref=tag` | `text/plain` | `.txt` |
 
 ---
 
@@ -88,6 +91,16 @@ data, err := format.NewMarkdownFormatter().Format(report)
 
 Best for: PR comments, GitHub issues, wikis.
 
+### Referrer tagging
+
+Set a referrer tag to know when someone clicks a finding's `URL` from this report — the formatter appends `?ref=<tag>` (merged into any existing query string) to `Finding.URL` before rendering it:
+
+```go
+data, err := format.NewMarkdownFormatterWithReferrerTag("weekly-scan").Format(report)
+```
+
+Off by default — `Finding.URL` is rendered unchanged unless a tag is set. This only affects Markdown, HTML, and Terminal output; JSON, JSONL, and SARIF always emit the original `Finding.URL`.
+
 ---
 
 ## HTML
@@ -99,6 +112,8 @@ data, err := format.NewHTMLFormatter().Format(report)
 ```
 
 Best for: standalone reports, email attachments, PDF export via browser print.
+
+Supports the same [referrer tagging](#referrer-tagging) as Markdown, via `NewHTMLFormatterWithReferrerTag(tag)`.
 
 ---
 
@@ -121,6 +136,8 @@ f := format.NewTerminalFormatter()
 // Plain text, no escape codes (e.g. for piping to a file)
 f := format.NewTerminalFormatterNoColor()
 ```
+
+Supports the same [referrer tagging](#referrer-tagging) as Markdown, via `NewTerminalFormatterWithReferrerTag(tag)`. Combine with no-color by constructing `&format.TerminalFormatter{NoColor: true, ReferrerTag: "weekly-scan"}` directly.
 
 ---
 

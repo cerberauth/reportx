@@ -300,3 +300,28 @@ func TestHTMLEmptyReport(t *testing.T) {
 		t.Error("empty report should not contain any finding <details>")
 	}
 }
+
+func TestHTMLReferrerTagAppendedToURL(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewHTMLFormatterWithReferrerTag("myreport").Format(r)
+	s := string(data)
+	if !strings.Contains(s, "https://api.example.com/users?ref=myreport") {
+		t.Error("URL should be tagged with ref query param")
+	}
+}
+
+func TestHTMLNoReferrerTagByDefault(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewHTMLFormatter().Format(r)
+	if strings.Contains(string(data), "ref=") {
+		t.Error("URL should not be tagged when ReferrerTag unset")
+	}
+}

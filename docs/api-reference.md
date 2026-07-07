@@ -47,6 +47,8 @@ type Finding struct {
 }
 ```
 
+`URL` is rendered as-is in every format by default. Markdown, HTML, and Terminal formatters can optionally tag it with a `?ref=<tag>` query param to identify report-driven clicks — see [Referrer tagging](formatters.md#referrer-tagging).
+
 #### Severity constants
 
 ```go

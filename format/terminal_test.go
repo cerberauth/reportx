@@ -224,3 +224,27 @@ func TestTerminalMultipleFindingsSeparated(t *testing.T) {
 		t.Error("both finding titles should appear in output")
 	}
 }
+
+func TestTerminalReferrerTagAppendedToURL(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewTerminalFormatterWithReferrerTag("myreport").Format(r)
+	if !strings.Contains(string(data), "https://api.example.com/users?ref=myreport") {
+		t.Error("URL should be tagged with ref query param")
+	}
+}
+
+func TestTerminalNoReferrerTagByDefault(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{richFinding()},
+	}
+	data, _ := format.NewTerminalFormatter().Format(r)
+	if strings.Contains(string(data), "ref=") {
+		t.Error("URL should not be tagged when ReferrerTag unset")
+	}
+}
