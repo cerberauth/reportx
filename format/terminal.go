@@ -48,8 +48,11 @@ func (f *TerminalFormatter) color(code, s string) string {
 
 func (f *TerminalFormatter) bold(s string) string { return f.color(ansiBold, s) }
 func (f *TerminalFormatter) dim(s string) string  { return f.color(ansiDim, s) }
-func (f *TerminalFormatter) severityStr(s reportx.Severity) string {
-	label := strings.ToUpper(string(s))
+
+// severityStrPadded pads label to width in plain text before colorizing,
+// so ANSI escape codes don't throw off fmt's %-*s column alignment.
+func (f *TerminalFormatter) severityStrPadded(s reportx.Severity, width int) string {
+	label := fmt.Sprintf("%-*s", width, strings.ToUpper(string(s)))
 	c, ok := severityColor[s]
 	if !ok || f.NoColor {
 		return label
@@ -89,10 +92,10 @@ func (f *TerminalFormatter) Format(r *reportx.Report) ([]byte, error) {
 		if n > 0 && !f.NoColor {
 			bar = severityColor[sev] + strings.Repeat("█", min(n, 20)) + ansiReset
 		}
-		fmt.Fprintf(w, "  %-10s %3d  %s\n", f.severityStr(sev), n, bar)
+		fmt.Fprintf(w, "  %s %3d  %s\n", f.severityStrPadded(sev, 10), n, bar)
 	}
 	fmt.Fprintf(w, "%s\n", strings.Repeat("─", 30))
-	fmt.Fprintf(w, "  %-10s %3d\n\n", f.bold("Total"), total)
+	fmt.Fprintf(w, "  %s %3d\n\n", f.bold(fmt.Sprintf("%-10s", "Total")), total)
 
 	for _, sev := range severityOrder {
 		band := r.FindingsBySeverity(sev)
