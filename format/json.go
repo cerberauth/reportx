@@ -34,6 +34,7 @@ type jsonFinding struct {
 	CWEID           string            `json:"cwe_id,omitempty"`
 	CWEName         string            `json:"cwe_name,omitempty"`
 	OwaspTop10      string            `json:"owasp_top10,omitempty"`
+	CAPECID         string            `json:"capec_id,omitempty"`
 	URL             string            `json:"url,omitempty"`
 	Parameter       string            `json:"parameter,omitempty"`
 	Evidence        any               `json:"evidence,omitempty"`
@@ -75,6 +76,7 @@ func toJSONFinding(f reportx.Finding) jsonFinding {
 		CWEID:           f.CWEID,
 		CWEName:         f.CWEName,
 		OwaspTop10:      f.OwaspTop10,
+		CAPECID:         f.CAPECID,
 		URL:             f.URL,
 		Parameter:       f.Parameter,
 		Description:     f.Description,
