@@ -36,6 +36,7 @@ type Finding struct {
 	CWEID           string
 	CWEName         string
 	OwaspTop10      string
+CAPECID         string
 	URL             string
 	Parameter       string
 	Evidence        Evidence
