@@ -7,6 +7,7 @@ All formatters live in the `format` sub-package and implement `reportx.Formatter
 | Constructor | Format | MediaType | FileExtension |
 |-------------|--------|-----------|---------------|
 | `NewJSONFormatter()` | JSON | `application/json` | `.json` |
+| `NewYAMLFormatter()` | YAML | `application/yaml` | `.yaml` |
 | `NewJSONLFormatter()` | JSONL | `application/x-ndjson` | `.jsonl` |
 | `NewSARIFFormatter()` | SARIF 2.1.0 | `application/sarif+json` | `.sarif.json` |
 | `NewMarkdownFormatter()` | Markdown | `text/markdown` | `.md` |
@@ -46,6 +47,18 @@ data, err := format.NewJSONFormatter().Format(report)
 ```
 
 Best for: REST APIs, dashboards, programmatic processing.
+
+---
+
+## YAML
+
+Same shape as JSON — `metadata` envelope plus `findings` array — marshaled to YAML instead. Carries the same `$schema` field.
+
+```go
+data, err := format.NewYAMLFormatter().Format(report)
+```
+
+Best for: config-driven pipelines, GitOps workflows, human-edited reports.
 
 ---
 
@@ -149,7 +162,7 @@ Use `format.NewFormatter(name string)` to resolve a formatter from a string — 
 f, err := format.NewFormatter("sarif")  // returns *SARIFFormatter
 ```
 
-Valid names: `json`, `jsonl`, `sarif`, `markdown` (alias: `md`), `html`, `terminal` (aliases: `text`, `plain`).
+Valid names: `json`, `yaml` (alias: `yml`), `jsonl`, `sarif`, `markdown` (alias: `md`), `html`, `terminal` (aliases: `text`, `plain`).
 
 ---
 
@@ -172,6 +185,6 @@ Registered flags:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `-format` | `terminal` | `json \| jsonl \| sarif \| markdown \| html \| terminal` |
+| `-format` | `terminal` | `json \| yaml \| jsonl \| sarif \| markdown \| html \| terminal` |
 | `-output` | `""` (stdout) | file path to write the report |
 | `-no-color` | `false` | disable ANSI colors in terminal output |

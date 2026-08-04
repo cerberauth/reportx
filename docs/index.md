@@ -10,7 +10,7 @@ go get github.com/cerberauth/reportx
 
 - [API Reference](api-reference.md) — `Finding`, `Report`, `Builder`, `Formatter`, `Transport`
 - [Evidence](evidence.md) — `HTTPEvidence`, `CustomEvidence`, custom evidence types
-- [Formatters](formatters.md) — JSON, JSONL, SARIF, Markdown, HTML, Terminal, CLIFlags
+- [Formatters](formatters.md) — JSON, YAML, JSONL, SARIF, Markdown, HTML, Terminal, CLIFlags
 - [Transports](transports.md) — `FSTransport`, `HTTPTransport`, custom transports
 - [CWE Enrichment](enrichment.md) — auto-fill `CWEName` and `OwaspTop10`
 - [Deduplication](deduplication.md) — fingerprinting and duplicate removal
