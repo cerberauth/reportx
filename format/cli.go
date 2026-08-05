@@ -11,6 +11,7 @@ type FormatName string
 
 const (
 	FormatJSON     FormatName = "json"
+	FormatYAML     FormatName = "yaml"
 	FormatJSONL    FormatName = "jsonl"
 	FormatSARIF    FormatName = "sarif"
 	FormatMarkdown FormatName = "markdown"
@@ -20,6 +21,7 @@ const (
 
 var FormatNames = []FormatName{
 	FormatJSON,
+	FormatYAML,
 	FormatJSONL,
 	FormatSARIF,
 	FormatMarkdown,
@@ -31,6 +33,8 @@ func NewFormatter(name string) (Formatter, error) {
 	switch FormatName(name) {
 	case FormatJSON:
 		return NewJSONFormatter(), nil
+	case FormatYAML, "yml":
+		return NewYAMLFormatter(), nil
 	case FormatJSONL:
 		return NewJSONLFormatter(), nil
 	case FormatSARIF:
@@ -42,7 +46,7 @@ func NewFormatter(name string) (Formatter, error) {
 	case FormatTerminal, "text", "plain":
 		return NewTerminalFormatter(), nil
 	default:
-		return nil, fmt.Errorf("unknown format %q: valid values are json, jsonl, sarif, markdown, html, terminal", name)
+		return nil, fmt.Errorf("unknown format %q: valid values are json, yaml, jsonl, sarif, markdown, html, terminal", name)
 	}
 }
 
@@ -55,7 +59,7 @@ type CLIFlags struct {
 func RegisterFlags(fs *flag.FlagSet) *CLIFlags {
 	f := &CLIFlags{}
 	fs.StringVar(&f.Format, "format", "terminal",
-		`output format: json | jsonl | sarif | markdown | html | terminal`)
+		`output format: json | yaml | jsonl | sarif | markdown | html | terminal`)
 	fs.StringVar(&f.Output, "output", "",
 		`file path to write the report (default: stdout)`)
 	fs.BoolVar(&f.NoColor, "no-color", false,

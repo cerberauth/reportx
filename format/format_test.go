@@ -66,6 +66,7 @@ func richFinding() reportx.Finding {
 
 func init() {
 	var _ format.Formatter = format.NewJSONFormatter()
+	var _ format.Formatter = format.NewYAMLFormatter()
 	var _ format.Formatter = format.NewJSONLFormatter()
 	var _ format.Formatter = format.NewSARIFFormatter()
 	var _ format.Formatter = format.NewMarkdownFormatter()
