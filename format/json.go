@@ -13,55 +13,56 @@ type JSONFormatter struct{}
 func NewJSONFormatter() *JSONFormatter { return &JSONFormatter{} }
 
 type jsonEvidence struct {
-	RawRequest      string              `json:"raw_request,omitempty"`
-	RawResponse     string              `json:"raw_response,omitempty"`
-	RequestMethod   string              `json:"request_method,omitempty"`
-	RequestURL      string              `json:"request_url,omitempty"`
-	ResponseStatus  int                 `json:"response_status,omitempty"`
-	ResponseHeaders map[string][]string `json:"response_headers,omitempty"`
-	RequestBody     string              `json:"request_body,omitempty"`
-	ResponseBody    string              `json:"response_body,omitempty"`
+	RawRequest      string              `json:"raw_request,omitempty" yaml:"raw_request,omitempty"`
+	RawResponse     string              `json:"raw_response,omitempty" yaml:"raw_response,omitempty"`
+	RequestMethod   string              `json:"request_method,omitempty" yaml:"request_method,omitempty"`
+	RequestURL      string              `json:"request_url,omitempty" yaml:"request_url,omitempty"`
+	RequestHeaders  map[string][]string `json:"request_headers,omitempty" yaml:"request_headers,omitempty"`
+	ResponseStatus  int                 `json:"response_status,omitempty" yaml:"response_status,omitempty"`
+	ResponseHeaders map[string][]string `json:"response_headers,omitempty" yaml:"response_headers,omitempty"`
+	RequestBody     string              `json:"request_body,omitempty" yaml:"request_body,omitempty"`
+	ResponseBody    string              `json:"response_body,omitempty" yaml:"response_body,omitempty"`
 }
 
 type jsonFinding struct {
-	ID              string            `json:"id"`
-	Title           string            `json:"title"`
-	Severity        reportx.Severity  `json:"severity"`
-	CVSS31Score     float64           `json:"cvss31_score,omitempty"`
-	CVSS31Vector    string            `json:"cvss31_vector,omitempty"`
-	CVSS40Score     float64           `json:"cvss40_score,omitempty"`
-	CVSS40Vector    string            `json:"cvss40_vector,omitempty"`
-	CWEID           string            `json:"cwe_id,omitempty"`
-	CWEName         string            `json:"cwe_name,omitempty"`
-	OwaspTop10      string            `json:"owasp_top10,omitempty"`
-	CAPECID         string            `json:"capec_id,omitempty"`
-	URL             string            `json:"url,omitempty"`
-	Parameter       string            `json:"parameter,omitempty"`
-	Evidence        any               `json:"evidence,omitempty"`
-	Description     string            `json:"description,omitempty"`
-	Remediation     string            `json:"remediation,omitempty"`
-	FirstSeen       string            `json:"first_seen,omitempty"`
-	LastSeen        string            `json:"last_seen,omitempty"`
-	Status          reportx.Status    `json:"status"`
-	FingerprintHash string            `json:"fingerprint_hash,omitempty"`
-	Tags            []string          `json:"tags,omitempty"`
-	Extra           map[string]string `json:"extra,omitempty"`
+	ID              string            `json:"id" yaml:"id"`
+	Title           string            `json:"title" yaml:"title"`
+	Severity        reportx.Severity  `json:"severity" yaml:"severity"`
+	CVSS31Score     float64           `json:"cvss31_score,omitempty" yaml:"cvss31_score,omitempty"`
+	CVSS31Vector    string            `json:"cvss31_vector,omitempty" yaml:"cvss31_vector,omitempty"`
+	CVSS40Score     float64           `json:"cvss40_score,omitempty" yaml:"cvss40_score,omitempty"`
+	CVSS40Vector    string            `json:"cvss40_vector,omitempty" yaml:"cvss40_vector,omitempty"`
+	CWEID           string            `json:"cwe_id,omitempty" yaml:"cwe_id,omitempty"`
+	CWEName         string            `json:"cwe_name,omitempty" yaml:"cwe_name,omitempty"`
+	OwaspTop10      string            `json:"owasp_top10,omitempty" yaml:"owasp_top10,omitempty"`
+	CAPECID         string            `json:"capec_id,omitempty" yaml:"capec_id,omitempty"`
+	URL             string            `json:"url,omitempty" yaml:"url,omitempty"`
+	Parameter       string            `json:"parameter,omitempty" yaml:"parameter,omitempty"`
+	Evidence        any               `json:"evidence,omitempty" yaml:"evidence,omitempty"`
+	Description     string            `json:"description,omitempty" yaml:"description,omitempty"`
+	Remediation     string            `json:"remediation,omitempty" yaml:"remediation,omitempty"`
+	FirstSeen       string            `json:"first_seen,omitempty" yaml:"first_seen,omitempty"`
+	LastSeen        string            `json:"last_seen,omitempty" yaml:"last_seen,omitempty"`
+	Status          reportx.Status    `json:"status" yaml:"status"`
+	FingerprintHash string            `json:"fingerprint_hash,omitempty" yaml:"fingerprint_hash,omitempty"`
+	Tags            []string          `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Extra           map[string]string `json:"extra,omitempty" yaml:"extra,omitempty"`
 }
 
 type jsonMetadata struct {
-	Title       string                   `json:"title"`
-	Tool        string                   `json:"tool"`
-	Version     string                   `json:"version"`
-	ScanDate    string                   `json:"scan_date"`
-	Target      string                   `json:"target"`
-	Total       int                      `json:"total"`
-	BySeverity  map[reportx.Severity]int `json:"by_severity"`
-	GeneratedBy string                   `json:"generated_by"`
+	Title       string                   `json:"title" yaml:"title"`
+	Tool        string                   `json:"tool" yaml:"tool"`
+	Version     string                   `json:"version" yaml:"version"`
+	ScanDate    string                   `json:"scan_date" yaml:"scan_date"`
+	Target      string                   `json:"target" yaml:"target"`
+	Total       int                      `json:"total" yaml:"total"`
+	BySeverity  map[reportx.Severity]int `json:"by_severity" yaml:"by_severity"`
+	GeneratedBy string                   `json:"generated_by" yaml:"generated_by"`
 }
 
 type jsonReport struct {
-	Metadata jsonMetadata  `json:"metadata"`
-	Findings []jsonFinding `json:"findings"`
+	Metadata jsonMetadata  `json:"metadata" yaml:"metadata"`
+	Findings []jsonFinding `json:"findings" yaml:"findings"`
 }
 
 func toJSONFinding(f reportx.Finding) jsonFinding {
@@ -100,6 +101,7 @@ func toJSONFinding(f reportx.Finding) jsonFinding {
 				RawResponse:     ev.RawResponse,
 				RequestMethod:   ev.RequestMethod,
 				RequestURL:      ev.RequestURL,
+				RequestHeaders:  ev.RequestHeaders,
 				ResponseStatus:  ev.ResponseStatus,
 				ResponseHeaders: ev.ResponseHeaders,
 				RequestBody:     string(ev.RequestBody),
