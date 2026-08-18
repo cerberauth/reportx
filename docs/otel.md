@@ -13,6 +13,8 @@ reportx is instrumented with [OpenTelemetry](https://opentelemetry.io/). When a 
 | `reportx.FSTransport.Send` | `transport.FSTransport.Send()` |
 | `reportx.HTTPTransport.Send` | `transport.HTTPTransport.Send()` |
 
+`Report.DeliverAll()` has no span of its own — it delegates each `Sink` to `WriteTo` or `Send`, so every destination gets its own span as usual.
+
 ## Span attributes
 
 ### `reportx.Build`

@@ -131,6 +131,9 @@ func (r *Report) WriteToFile(ctx context.Context, path string, f Formatter) erro
 // Send via a Transport.
 func (r *Report) Send(ctx context.Context, t Transport, f Formatter) error
 
+// Deliver to every Sink, continuing past individual failures.
+func (r *Report) DeliverAll(ctx context.Context, sinks []Sink) error
+
 // Count findings by severity.
 func (r *Report) SeverityCounts() map[Severity]int
 
@@ -198,5 +201,36 @@ type Formatter interface {
 ```go
 type Transport interface {
     Send(ctx context.Context, r *Report, f Formatter) error
+}
+```
+
+---
+
+### Sink
+
+Pairs a `Formatter` with one destination — either a `Writer` or a `Transport`, mutually exclusive. Used with `Report.DeliverAll` to send one report to several destinations in a single call.
+
+```go
+type Sink struct {
+    Formatter Formatter
+    Writer    io.Writer // mutually exclusive with Transport
+    Transport Transport // mutually exclusive with Writer
+}
+```
+
+`DeliverAll` runs every sink, collects any errors with `errors.Join`, and returns `nil` only if all sinks succeeded.
+
+**Example:**
+
+```go
+var buf bytes.Buffer
+sinks := []reportx.Sink{
+    {Formatter: format.NewTerminalFormatter(), Writer: os.Stdout},
+    {Formatter: format.NewJSONFormatter(), Writer: &buf},
+    {Formatter: format.NewSARIFFormatter(), Transport: transport.NewHTTPTransport(webhookURL)},
+}
+
+if err := report.DeliverAll(ctx, sinks); err != nil {
+    log.Printf("some sinks failed: %v", err)
 }
 ```

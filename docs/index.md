@@ -8,7 +8,7 @@ go get github.com/cerberauth/reportx
 
 ## Guides
 
-- [API Reference](api-reference.md) — `Finding`, `Report`, `Builder`, `Formatter`, `Transport`
+- [API Reference](api-reference.md) — `Finding`, `Report`, `Builder`, `Formatter`, `Transport`, `Sink`
 - [Evidence](evidence.md) — `HTTPEvidence`, `CustomEvidence`, custom evidence types
 - [Formatters](formatters.md) — JSON, JSONL, SARIF, Markdown, HTML, Terminal, CLIFlags
 - [Transports](transports.md) — `FSTransport`, `HTTPTransport`, custom transports

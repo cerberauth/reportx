@@ -2,6 +2,7 @@ package reportx
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -122,6 +123,35 @@ func (r *Report) Send(ctx context.Context, t Transport, f Formatter) error {
 		return err
 	}
 	return nil
+}
+
+// Sink pairs a Formatter with exactly one delivery target for a report:
+// either a Writer (stdout, a file, ...) or a Transport (HTTP, ...).
+type Sink struct {
+	Formatter Formatter
+	Writer    io.Writer // mutually exclusive with Transport
+	Transport Transport // mutually exclusive with Writer
+}
+
+func (s Sink) deliver(ctx context.Context, r *Report) error {
+	if s.Transport != nil {
+		return r.Send(ctx, s.Transport, s.Formatter)
+	}
+	return r.WriteTo(ctx, s.Writer, s.Formatter)
+}
+
+// DeliverAll delivers the report to every sink, each in its own format, so
+// e.g. a terminal display, a JSON file, and an HTTP POST in another format
+// can all happen from a single report. Errors from individual sinks are
+// joined rather than short-circuiting delivery to the rest.
+func (r *Report) DeliverAll(ctx context.Context, sinks []Sink) error {
+	var errs []error
+	for _, s := range sinks {
+		if err := s.deliver(ctx, r); err != nil {
+			errs = append(errs, err)
+		}
+	}
+	return errors.Join(errs...)
 }
 
 type EnrichFunc func([]Finding) []Finding
