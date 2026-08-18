@@ -110,3 +110,24 @@ Then use it the same way:
 ```go
 err := report.Send(ctx, &S3Transport{Bucket: "my-bucket", Key: "report.json"}, format.NewJSONFormatter())
 ```
+
+---
+
+## Delivering to multiple destinations
+
+`Sink` pairs a `Formatter` with one destination — a `Writer` or a `Transport` — and `Report.DeliverAll` runs a list of them in one call, each with its own format:
+
+```go
+sinks := []reportx.Sink{
+    {Formatter: format.NewTerminalFormatter(), Writer: os.Stdout},
+    {Formatter: format.NewJSONFormatter(), Transport: transport.NewFSTransport("/var/reports")},
+    {Formatter: format.NewSARIFFormatter(), Transport: transport.NewHTTPTransport(webhookURL)},
+}
+
+if err := report.DeliverAll(ctx, sinks); err != nil {
+    // errors.Join of every sink that failed; the rest still ran
+    log.Printf("some sinks failed: %v", err)
+}
+```
+
+Each `Sink` sets either `Writer` or `Transport`, never both. A failing sink doesn't stop the others — `DeliverAll` collects every error with `errors.Join` and returns it after all sinks have run. See [API Reference](api-reference.md#sink) for the `Sink` type.
