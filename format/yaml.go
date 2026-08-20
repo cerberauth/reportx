@@ -18,6 +18,7 @@ func (f *YAMLFormatter) Format(r *reportx.Report) ([]byte, error) {
 	}
 
 	out := jsonReport{
+		Schema: ReportSchemaURL,
 		Metadata: jsonMetadata{
 			Title:       r.Title,
 			Tool:        r.ToolName,

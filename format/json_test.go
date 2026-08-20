@@ -44,6 +44,23 @@ func TestJSONMetadata(t *testing.T) {
 	}
 }
 
+func TestJSONSchemaField(t *testing.T) {
+	r := fullReport()
+	data, err := format.NewJSONFormatter().Format(r)
+	if err != nil {
+		t.Fatalf("Format() error: %v", err)
+	}
+
+	var out map[string]any
+	if err := json.Unmarshal(data, &out); err != nil {
+		t.Fatalf("not valid JSON: %v", err)
+	}
+
+	if out["$schema"] != format.ReportSchemaURL {
+		t.Errorf("$schema = %v, want %v", out["$schema"], format.ReportSchemaURL)
+	}
+}
+
 func TestJSONMetadataBySeverity(t *testing.T) {
 	r := &reportx.Report{
 		ToolName: "T",

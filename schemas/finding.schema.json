@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.3.0/finding.schema.json",
+  "title": "reportx Finding",
+  "description": "A single finding as emitted by reportx's JSON formatter (report findings array) and JSONL formatter (one per line).",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Present only on JSONL lines; points back to this schema."
+    },
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "cvss31_score": { "type": "number", "minimum": 0, "maximum": 10 },
+    "cvss31_vector": { "type": "string" },
+    "cvss40_score": { "type": "number", "minimum": 0, "maximum": 10 },
+    "cvss40_vector": { "type": "string" },
+    "cwe_id": { "type": "string" },
+    "cwe_name": { "type": "string" },
+    "owasp_top10": { "type": "string" },
+    "capec_id": { "type": "string" },
+    "url": { "type": "string" },
+    "parameter": { "type": "string" },
+    "evidence": {
+      "description": "Either structured HTTP evidence or arbitrary custom evidence data.",
+      "type": "object",
+      "properties": {
+        "raw_request": { "type": "string" },
+        "raw_response": { "type": "string" },
+        "request_method": { "type": "string" },
+        "request_url": { "type": "string" },
+        "request_headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "response_status": { "type": "integer" },
+        "response_headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "request_body": { "type": "string" },
+        "response_body": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "description": { "type": "string" },
+    "remediation": { "type": "string" },
+    "first_seen": { "type": "string", "format": "date-time" },
+    "last_seen": { "type": "string", "format": "date-time" },
+    "status": {
+      "type": "string",
+      "enum": ["active", "false_positive", "accepted_risk", "mitigated"]
+    },
+    "fingerprint_hash": { "type": "string" },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extra": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "required": ["id", "title", "severity", "status"],
+  "additionalProperties": false
+}

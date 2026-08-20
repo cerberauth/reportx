@@ -32,6 +32,7 @@ data, err := format.NewJSONFormatter().Format(report)
 
 ```json
 {
+  "$schema": "https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json",
   "metadata": {
     "title": "Nightly scan",
     "tool": "MyScanner",
@@ -45,6 +46,8 @@ data, err := format.NewJSONFormatter().Format(report)
   "findings": [...]
 }
 ```
+
+Output carries a `$schema` field pointing at the published [JSON Schema](https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json) — editors and validators can use it directly.
 
 Best for: REST APIs, dashboards, programmatic processing.
 
@@ -64,7 +67,7 @@ Best for: config-driven pipelines, GitOps workflows, human-edited reports.
 
 ## JSONL
 
-One JSON object per line (newline-delimited JSON). Each line is a `Finding`.
+One JSON object per line (newline-delimited JSON). Each line is a `Finding`, tagged with its own `$schema` field pointing at the [Finding schema](https://schemas.cerberauth.com/reportx/v0.3.0/finding.schema.json).
 
 ```go
 data, err := format.NewJSONLFormatter().Format(report)
