@@ -17,6 +17,7 @@ go get github.com/cerberauth/reportx
 - [CVSS Scoring](cvss.md) — CVSS 3.1 and 4.0 base score calculation
 - [OpenTelemetry](otel.md) — spans, attributes, setup
 - [Extending](extending.md) — custom formatters, transports, enrichment, dedup, evidence
+- [Schemas](../schemas/) — JSON Schemas for the JSON/JSONL output, published at schemas.cerberauth.com
 
 ## Quick start
 

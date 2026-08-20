@@ -15,7 +15,9 @@ func (f *JSONLFormatter) Format(r *reportx.Report) ([]byte, error) {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
 	for _, finding := range r.Findings {
-		if err := enc.Encode(toJSONFinding(finding)); err != nil {
+		jf := toJSONFinding(finding)
+		jf.Schema = FindingSchemaURL
+		if err := enc.Encode(jf); err != nil {
 			return nil, err
 		}
 	}

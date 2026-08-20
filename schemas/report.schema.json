@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json",
+  "title": "reportx Report",
+  "description": "A security report as emitted by reportx's JSON formatter.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "tool": { "type": "string" },
+        "version": { "type": "string" },
+        "scan_date": { "type": "string", "format": "date-time" },
+        "target": { "type": "string" },
+        "total": { "type": "integer", "minimum": 0 },
+        "by_severity": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 },
+          "propertyNames": {
+            "enum": ["critical", "high", "medium", "low", "info"]
+          }
+        },
+        "generated_by": { "type": "string" }
+      },
+      "required": ["title", "tool", "version", "scan_date", "target", "total", "by_severity", "generated_by"],
+      "additionalProperties": false
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.cerberauth.com/reportx/finding.schema.json"
+      }
+    }
+  },
+  "required": ["metadata", "findings"],
+  "additionalProperties": false
+}

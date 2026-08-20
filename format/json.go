@@ -12,6 +12,13 @@ type JSONFormatter struct{}
 
 func NewJSONFormatter() *JSONFormatter { return &JSONFormatter{} }
 
+// ReportSchemaURL and FindingSchemaURL point at the JSON Schemas published
+// for reportx's JSON and JSONL output on schemas.cerberauth.com.
+const (
+	ReportSchemaURL  = "https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json"
+	FindingSchemaURL = "https://schemas.cerberauth.com/reportx/v0.3.0/finding.schema.json"
+)
+
 type jsonEvidence struct {
 	RawRequest      string              `json:"raw_request,omitempty" yaml:"raw_request,omitempty"`
 	RawResponse     string              `json:"raw_response,omitempty" yaml:"raw_response,omitempty"`
@@ -25,6 +32,7 @@ type jsonEvidence struct {
 }
 
 type jsonFinding struct {
+	Schema          string            `json:"$schema,omitempty" yaml:"$schema,omitempty"`
 	ID              string            `json:"id" yaml:"id"`
 	Title           string            `json:"title" yaml:"title"`
 	Severity        reportx.Severity  `json:"severity" yaml:"severity"`
@@ -61,6 +69,7 @@ type jsonMetadata struct {
 }
 
 type jsonReport struct {
+	Schema   string        `json:"$schema,omitempty" yaml:"$schema,omitempty"`
 	Metadata jsonMetadata  `json:"metadata" yaml:"metadata"`
 	Findings []jsonFinding `json:"findings" yaml:"findings"`
 }
@@ -123,6 +132,7 @@ func (f *JSONFormatter) Format(r *reportx.Report) ([]byte, error) {
 	}
 
 	out := jsonReport{
+		Schema: ReportSchemaURL,
 		Metadata: jsonMetadata{
 			Title:       r.Title,
 			Tool:        r.ToolName,

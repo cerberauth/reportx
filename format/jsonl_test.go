@@ -82,6 +82,24 @@ func TestJSONLFindingFields(t *testing.T) {
 	}
 }
 
+func TestJSONLSchemaField(t *testing.T) {
+	r := &reportx.Report{
+		ToolName: "T",
+		ScanDate: time.Now(),
+		Findings: []reportx.Finding{minimalFinding()},
+	}
+	data, err := format.NewJSONLFormatter().Format(r)
+	if err != nil {
+		t.Fatalf("Format() error: %v", err)
+	}
+
+	var f map[string]any
+	json.Unmarshal(bytes.TrimRight(data, "\n"), &f)
+	if f["$schema"] != format.FindingSchemaURL {
+		t.Errorf("$schema = %v, want %v", f["$schema"], format.FindingSchemaURL)
+	}
+}
+
 func TestJSONLEmptyReportProducesNoOutput(t *testing.T) {
 	data, err := format.NewJSONLFormatter().Format(emptyReport())
 	if err != nil {
