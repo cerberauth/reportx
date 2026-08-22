@@ -1,5 +1,12 @@
 [
   {
+    "id": "CWE-16",
+    "name": "Configuration",
+    "short_name": "Configuration",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
     "id": "CWE-22",
     "name": "Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
     "short_name": "Path Traversal",
@@ -28,9 +35,37 @@
     "owasp_2025": "A05:2025"
   },
   {
+    "id": "CWE-90",
+    "name": "Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection')",
+    "short_name": "LDAP Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
     "id": "CWE-94",
     "name": "Improper Control of Generation of Code ('Code Injection')",
     "short_name": "Code Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-95",
+    "name": "Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')",
+    "short_name": "Eval Injection",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-113",
+    "name": "Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Response Splitting')",
+    "short_name": "HTTP Response Splitting",
+    "owasp_2021": "A03:2021",
+    "owasp_2025": "A05:2025"
+  },
+  {
+    "id": "CWE-116",
+    "name": "Improper Encoding or Escaping of Output",
+    "short_name": "Improper Output Encoding",
     "owasp_2021": "A03:2021",
     "owasp_2025": "A05:2025"
   },
@@ -40,6 +75,20 @@
     "short_name": "Exposure of Sensitive Information",
     "owasp_2021": "A02:2021",
     "owasp_2025": "A02:2025"
+  },
+  {
+    "id": "CWE-209",
+    "name": "Generation of Error Message Containing Sensitive Information",
+    "short_name": "Sensitive Info in Error Message",
+    "owasp_2021": "A04:2021",
+    "owasp_2025": "A03:2025"
+  },
+  {
+    "id": "CWE-269",
+    "name": "Improper Privilege Management",
+    "short_name": "Improper Privilege Management",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
   },
   {
     "id": "CWE-284",
@@ -63,6 +112,13 @@
     "owasp_2025": "A07:2025"
   },
   {
+    "id": "CWE-311",
+    "name": "Missing Encryption of Sensitive Data",
+    "short_name": "Missing Encryption of Sensitive Data",
+    "owasp_2021": "A02:2021",
+    "owasp_2025": "A02:2025"
+  },
+  {
     "id": "CWE-319",
     "name": "Cleartext Transmission of Sensitive Information",
     "short_name": "Cleartext Transmission of Sensitive Information",
@@ -77,11 +133,39 @@
     "owasp_2025": "A02:2025"
   },
   {
+    "id": "CWE-330",
+    "name": "Use of Insufficiently Random Values",
+    "short_name": "Insufficiently Random Values",
+    "owasp_2021": "A02:2021",
+    "owasp_2025": "A02:2025"
+  },
+  {
+    "id": "CWE-345",
+    "name": "Insufficient Verification of Data Authenticity",
+    "short_name": "Insufficient Data Authenticity",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-346",
+    "name": "Origin Validation Error",
+    "short_name": "Origin Validation Error",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
     "id": "CWE-352",
     "name": "Cross-Site Request Forgery (CSRF)",
     "short_name": "CSRF",
     "owasp_2021": "A01:2021",
     "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-384",
+    "name": "Session Fixation",
+    "short_name": "Session Fixation",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
   },
   {
     "id": "CWE-400",
@@ -98,11 +182,32 @@
     "owasp_2025": "A05:2025"
   },
   {
+    "id": "CWE-489",
+    "name": "Active Debug Code",
+    "short_name": "Active Debug Code",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
     "id": "CWE-502",
     "name": "Deserialization of Untrusted Data",
     "short_name": "Deserialization of Untrusted Data",
     "owasp_2021": "A08:2021",
     "owasp_2025": "A04:2025"
+  },
+  {
+    "id": "CWE-521",
+    "name": "Weak Password Requirements",
+    "short_name": "Weak Password Requirements",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
+  },
+  {
+    "id": "CWE-522",
+    "name": "Insufficiently Protected Credentials",
+    "short_name": "Insufficiently Protected Credentials",
+    "owasp_2021": "A07:2021",
+    "owasp_2025": "A07:2025"
   },
   {
     "id": "CWE-601",
@@ -119,6 +224,34 @@
     "owasp_2025": "A05:2025"
   },
   {
+    "id": "CWE-613",
+    "name": "Insufficient Session Expiration",
+    "short_name": "Insufficient Session Expiration",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-614",
+    "name": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+    "short_name": "Cookie Without Secure Flag",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-639",
+    "name": "Authorization Bypass Through User-Controlled Key",
+    "short_name": "IDOR",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-732",
+    "name": "Incorrect Permission Assignment for Critical Resource",
+    "short_name": "Incorrect Permission Assignment",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
     "id": "CWE-770",
     "name": "Allocation of Resources Without Limits or Throttling",
     "short_name": "Allocation of Resources Without Limits or Throttling",
@@ -133,10 +266,59 @@
     "owasp_2025": "A07:2025"
   },
   {
+    "id": "CWE-862",
+    "name": "Missing Authorization",
+    "short_name": "Missing Authorization",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
+    "id": "CWE-863",
+    "name": "Incorrect Authorization",
+    "short_name": "Incorrect Authorization",
+    "owasp_2021": "A01:2021",
+    "owasp_2025": "A01:2025"
+  },
+  {
     "id": "CWE-918",
     "name": "Server-Side Request Forgery (SSRF)",
     "short_name": "SSRF",
     "owasp_2021": "A10:2021",
     "owasp_2025": "A09:2025"
+  },
+  {
+    "id": "CWE-942",
+    "name": "Permissive Cross-domain Policy with Untrusted Domains",
+    "short_name": "Permissive CORS Policy",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-1004",
+    "name": "Sensitive Cookie Without 'HttpOnly' Flag",
+    "short_name": "Cookie Without HttpOnly Flag",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-1021",
+    "name": "Improper Restriction of Rendered UI Layers or Frames",
+    "short_name": "Clickjacking",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-1188",
+    "name": "Insecure Default Initialization of Resource",
+    "short_name": "Insecure Default Initialization",
+    "owasp_2021": "",
+    "owasp_2025": ""
+  },
+  {
+    "id": "CWE-1275",
+    "name": "Sensitive Cookie with Improper SameSite Attribute",
+    "short_name": "Cookie With Improper SameSite",
+    "owasp_2021": "",
+    "owasp_2025": ""
   }
 ]
