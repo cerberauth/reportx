@@ -69,10 +69,42 @@ type jsonMetadata struct {
 	GeneratedBy string                   `json:"generated_by" yaml:"generated_by"`
 }
 
+type jsonScanError struct {
+	CheckID  string `json:"check_id" yaml:"check_id"`
+	Resource string `json:"resource,omitempty" yaml:"resource,omitempty"`
+	Message  string `json:"message" yaml:"message"`
+}
+
+type jsonCoverage struct {
+	Run     int `json:"run" yaml:"run"`
+	Skipped int `json:"skipped" yaml:"skipped"`
+	Errored int `json:"errored" yaml:"errored"`
+}
+
 type jsonReport struct {
-	Schema   string        `json:"$schema,omitempty" yaml:"$schema,omitempty"`
-	Metadata jsonMetadata  `json:"metadata" yaml:"metadata"`
-	Findings []jsonFinding `json:"findings" yaml:"findings"`
+	Schema   string          `json:"$schema,omitempty" yaml:"$schema,omitempty"`
+	Metadata jsonMetadata    `json:"metadata" yaml:"metadata"`
+	Errors   []jsonScanError `json:"errors,omitempty" yaml:"errors,omitempty"`
+	Coverage *jsonCoverage   `json:"coverage,omitempty" yaml:"coverage,omitempty"`
+	Findings []jsonFinding   `json:"findings" yaml:"findings"`
+}
+
+func toJSONErrors(errs []reportx.ScanError) []jsonScanError {
+	if len(errs) == 0 {
+		return nil
+	}
+	out := make([]jsonScanError, len(errs))
+	for i, e := range errs {
+		out[i] = jsonScanError{CheckID: e.CheckID, Resource: e.Resource, Message: e.Message}
+	}
+	return out
+}
+
+func toJSONCoverage(c reportx.Coverage) *jsonCoverage {
+	if c.IsZero() {
+		return nil
+	}
+	return &jsonCoverage{Run: c.Run, Skipped: c.Skipped, Errored: c.Errored}
 }
 
 func toJSONFinding(f reportx.Finding) jsonFinding {
@@ -145,6 +177,8 @@ func (f *JSONFormatter) Format(r *reportx.Report) ([]byte, error) {
 			BySeverity:  r.SeverityCounts(),
 			GeneratedBy: reportx.Watermark,
 		},
+		Errors:   toJSONErrors(r.Errors),
+		Coverage: toJSONCoverage(r.Coverage),
 		Findings: findings,
 	}
 	return json.MarshalIndent(out, "", "  ")

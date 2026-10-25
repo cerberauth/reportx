@@ -49,6 +49,8 @@ data, err := format.NewJSONFormatter().Format(report)
 
 Output carries a `$schema` field pointing at the published [JSON Schema](https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json) — editors and validators can use it directly.
 
+When the report has scan errors or coverage, top-level `errors` (`check_id`, `resource`, `message`) and `coverage` (`run`, `skipped`, `errored`) objects are added; they are omitted otherwise.
+
 Best for: REST APIs, dashboards, programmatic processing.
 
 ---
@@ -73,6 +75,8 @@ One JSON object per line (newline-delimited JSON). Each line is a `Finding`, tag
 data, err := format.NewJSONLFormatter().Format(report)
 ```
 
+When the report has scan errors or coverage, a final `{"type": "scan_summary", "errors": [...], "coverage": {...}}` line follows the findings. Finding lines have no `type` key.
+
 Best for: streaming pipelines, feeding to `jq`, SIEM ingestion.
 
 ---
@@ -92,6 +96,8 @@ Severity mapping:
 | critical, high | `error` |
 | medium | `warning` |
 | low, info | `note` |
+
+Scan errors become `invocations[0].toolExecutionNotifications` (level `error`, `associatedRule.id` = check ID, location = resource) and `executionSuccessful` is `false`; coverage counts go to the run's `properties.coverage`.
 
 Best for: GitHub Code Scanning, Azure DevOps, IDE security plugins.
 

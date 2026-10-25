@@ -29,6 +29,8 @@ func (f *YAMLFormatter) Format(r *reportx.Report) ([]byte, error) {
 			BySeverity:  r.SeverityCounts(),
 			GeneratedBy: reportx.Watermark,
 		},
+		Errors:   toJSONErrors(r.Errors),
+		Coverage: toJSONCoverage(r.Coverage),
 		Findings: findings,
 	}
 	return yaml.Marshal(out)

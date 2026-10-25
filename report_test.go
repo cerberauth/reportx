@@ -150,3 +150,34 @@ func TestReportSendError(t *testing.T) {
 		t.Errorf("Send() error = %v, want %v", err, wantErr)
 	}
 }
+
+func TestBuilderErrorsAndCoverage(t *testing.T) {
+	errs := []reportx.ScanError{
+		{CheckID: "jwt-none", Resource: "https://api.example.com/a", Message: "timeout"},
+		{CheckID: "jwt-weak", Message: "connection refused"},
+	}
+
+	r, err := reportx.NewBuilder().Errors(errs).Coverage(10, 3, 2).Build(context.Background())
+	if err != nil {
+		t.Fatalf("Build() error: %v", err)
+	}
+
+	if len(r.Errors) != 2 || r.Errors[0] != errs[0] || r.Errors[1] != errs[1] {
+		t.Errorf("Errors = %v", r.Errors)
+	}
+	if want := (reportx.Coverage{Run: 10, Skipped: 3, Errored: 2}); r.Coverage != want {
+		t.Errorf("Coverage = %+v, want %+v", r.Coverage, want)
+	}
+
+	errs[0].Message = "mutated"
+	if r.Errors[0].Message != "timeout" {
+		t.Error("Build must copy the errors slice")
+	}
+}
+
+func TestBuilderDefaultsHaveNoErrorsOrCoverage(t *testing.T) {
+	r, _ := reportx.NewBuilder().Build(context.Background())
+	if len(r.Errors) != 0 || !r.Coverage.IsZero() {
+		t.Errorf("Errors = %v, Coverage = %+v", r.Errors, r.Coverage)
+	}
+}

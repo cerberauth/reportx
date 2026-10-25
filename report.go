@@ -16,6 +16,24 @@ import (
 
 var tracer = otel.Tracer("github.com/cerberauth/reportx")
 
+// ScanError records a check that failed or timed out, so the report does not
+// read as "no issue" for something that was never fully evaluated.
+type ScanError struct {
+	CheckID  string
+	Resource string
+	Message  string
+}
+
+// Coverage counts how many checks were run, skipped, or errored.
+type Coverage struct {
+	Run     int
+	Skipped int
+	Errored int
+}
+
+// IsZero reports whether no coverage was recorded.
+func (c Coverage) IsZero() bool { return c == Coverage{} }
+
 type Report struct {
 	Title       string
 	ScanDate    time.Time
@@ -23,6 +41,8 @@ type Report struct {
 	ToolVersion string
 	Target      string
 	Findings    []Finding
+	Errors      []ScanError
+	Coverage    Coverage
 }
 
 func (r *Report) SeverityCounts() map[Severity]int {
@@ -165,6 +185,8 @@ type Builder struct {
 	toolVersion string
 	target      string
 	findings    []Finding
+	errors      []ScanError
+	coverage    Coverage
 	enrichFunc  EnrichFunc
 	dedupFunc   DedupFunc
 }
@@ -199,6 +221,16 @@ func (b *Builder) Findings(findings []Finding) *Builder {
 	return b
 }
 
+func (b *Builder) Errors(errs []ScanError) *Builder {
+	b.errors = errs
+	return b
+}
+
+func (b *Builder) Coverage(run, skipped, errored int) *Builder {
+	b.coverage = Coverage{Run: run, Skipped: skipped, Errored: errored}
+	return b
+}
+
 func (b *Builder) Enrich(fn EnrichFunc) *Builder {
 	b.enrichFunc = fn
 	return b
@@ -230,6 +262,12 @@ func (b *Builder) Build(ctx context.Context) (*Report, error) {
 		findings = b.dedupFunc(findings)
 	}
 
+	var scanErrors []ScanError
+	if len(b.errors) > 0 {
+		scanErrors = make([]ScanError, len(b.errors))
+		copy(scanErrors, b.errors)
+	}
+
 	scanDate := b.scanDate
 	if scanDate.IsZero() {
 		scanDate = time.Now()
@@ -242,5 +280,7 @@ func (b *Builder) Build(ctx context.Context) (*Report, error) {
 		ToolVersion: b.toolVersion,
 		Target:      b.target,
 		Findings:    findings,
+		Errors:      scanErrors,
+		Coverage:    b.coverage,
 	}, nil
 }
