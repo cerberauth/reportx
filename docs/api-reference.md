@@ -25,7 +25,7 @@ type Finding struct {
     OwaspTop10 string // e.g. "A03:2021 – Injection"; filled by Enrich()
 
     // Location
-    URL       string // endpoint URL
+    URL       string // affected endpoint (not an advisory link; use References)
     Parameter string // query/body parameter, header name, etc.
 
     // Evidence
@@ -34,6 +34,7 @@ type Finding struct {
     // Narrative
     Description string // what was found and why it matters
     Remediation string // how to fix it
+    References  []string // advisory/doc links; References[0] becomes the SARIF rule helpUri
 
     // Lifecycle
     FirstSeen       time.Time
