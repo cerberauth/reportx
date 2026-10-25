@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json",
   "title": "reportx Report",
   "description": "A security report as emitted by reportx's JSON formatter.",
   "type": "object",

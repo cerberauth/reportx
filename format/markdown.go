@@ -114,6 +114,13 @@ func writeFindingMD(buf *bytes.Buffer, f reportx.Finding, referrerTag string) {
 	if f.Remediation != "" {
 		fmt.Fprintf(buf, "**Remediation**\n\n%s\n\n", f.Remediation)
 	}
+	if len(f.References) > 0 {
+		buf.WriteString("**References**\n\n")
+		for _, ref := range f.References {
+			fmt.Fprintf(buf, "- %s\n", ref)
+		}
+		buf.WriteString("\n")
+	}
 
 	switch ev := f.Evidence.(type) {
 	case *evidence.HTTPEvidence:
