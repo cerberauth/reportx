@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.cerberauth.com/reportx/v0.3.0/finding.schema.json",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.4.0/finding.schema.json",
   "title": "reportx Finding",
   "description": "A single finding as emitted by reportx's JSON formatter (report findings array) and JSONL formatter (one per line).",
   "type": "object",

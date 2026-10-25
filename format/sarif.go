@@ -19,9 +19,26 @@ type sarifRoot struct {
 }
 
 type sarifRun struct {
-	Tool       sarifTool      `json:"tool"`
-	Results    []sarifResult  `json:"results"`
-	Properties map[string]any `json:"properties,omitempty"`
+	Tool        sarifTool         `json:"tool"`
+	Invocations []sarifInvocation `json:"invocations,omitempty"`
+	Results     []sarifResult     `json:"results"`
+	Properties  map[string]any    `json:"properties,omitempty"`
+}
+
+type sarifInvocation struct {
+	ExecutionSuccessful        bool                `json:"executionSuccessful"`
+	ToolExecutionNotifications []sarifNotification `json:"toolExecutionNotifications,omitempty"`
+}
+
+type sarifNotification struct {
+	Level          string              `json:"level"`
+	Message        sarifMessage        `json:"message"`
+	AssociatedRule *sarifRuleReference `json:"associatedRule,omitempty"`
+	Locations      []sarifLocation     `json:"locations,omitempty"`
+}
+
+type sarifRuleReference struct {
+	ID string `json:"id"`
 }
 
 type sarifTool struct {
@@ -152,6 +169,36 @@ func (f *SARIFFormatter) Format(r *reportx.Report) ([]byte, error) {
 		results = append(results, result)
 	}
 
+	runProps := map[string]any{
+		"generated_by": reportx.Watermark,
+	}
+	if !r.Coverage.IsZero() {
+		runProps["coverage"] = map[string]int{
+			"run":     r.Coverage.Run,
+			"skipped": r.Coverage.Skipped,
+			"errored": r.Coverage.Errored,
+		}
+	}
+	var invocations []sarifInvocation
+	if len(r.Errors) > 0 || !r.Coverage.IsZero() {
+		inv := sarifInvocation{ExecutionSuccessful: len(r.Errors) == 0 && r.Coverage.Errored == 0}
+		for _, e := range r.Errors {
+			n := sarifNotification{Level: "error", Message: sarifMessage{Text: e.Message}}
+			if e.CheckID != "" {
+				n.AssociatedRule = &sarifRuleReference{ID: e.CheckID}
+			}
+			if e.Resource != "" {
+				n.Locations = []sarifLocation{
+					{PhysicalLocation: sarifPhysicalLocation{
+						ArtifactLocation: sarifArtifactLocation{URI: e.Resource},
+					}},
+				}
+			}
+			inv.ToolExecutionNotifications = append(inv.ToolExecutionNotifications, n)
+		}
+		invocations = []sarifInvocation{inv}
+	}
+
 	root := sarifRoot{
 		Schema:  "https://json.schemastore.org/sarif-2.1.0.json",
 		Version: "2.1.0",
@@ -165,10 +212,9 @@ func (f *SARIFFormatter) Format(r *reportx.Report) ([]byte, error) {
 						Rules:          rules,
 					},
 				},
-				Results: results,
-				Properties: map[string]any{
-					"generated_by": reportx.Watermark,
-				},
+				Invocations: invocations,
+				Results:     results,
+				Properties:  runProps,
 			},
 		},
 	}

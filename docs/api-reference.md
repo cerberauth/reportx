@@ -141,6 +141,10 @@ func (r *Report) SeverityCounts() map[Severity]int
 func (r *Report) FindingsBySeverity(s Severity) []Finding
 ```
 
+#### Errors and coverage
+
+`Report.Errors` (`[]ScanError{CheckID, Resource, Message}`) and `Report.Coverage` (`{Run, Skipped, Errored}`) describe checks that did not complete. Every formatter renders them in an "Errors / Coverage" section; when both are empty nothing is rendered.
+
 ---
 
 ### Builder
@@ -155,6 +159,12 @@ func (b *Builder) Tool(name, version string) *Builder
 func (b *Builder) Target(target string) *Builder
 func (b *Builder) Findings(findings []Finding) *Builder
 func (b *Builder) ScanDate(t time.Time) *Builder
+
+// Errors records checks that failed or timed out, so they do not read as "no issue".
+func (b *Builder) Errors(errs []ScanError) *Builder
+
+// Coverage records how many checks were run, skipped, and errored.
+func (b *Builder) Coverage(run, skipped, errored int) *Builder
 
 // Enrich fills CWEName and OwaspTop10 on each finding.
 // Pass enrich.EnrichAll from the enrich sub-package.

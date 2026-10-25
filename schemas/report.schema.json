@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.cerberauth.com/reportx/v0.3.0/report.schema.json",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json",
   "title": "reportx Report",
   "description": "A security report as emitted by reportx's JSON formatter.",
   "type": "object",
@@ -28,6 +28,31 @@
         "generated_by": { "type": "string" }
       },
       "required": ["title", "tool", "version", "scan_date", "target", "total", "by_severity", "generated_by"],
+      "additionalProperties": false
+    },
+    "errors": {
+      "description": "Checks that errored or timed out. Omitted when there are none.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check_id": { "type": "string" },
+          "resource": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "required": ["check_id", "message"],
+        "additionalProperties": false
+      }
+    },
+    "coverage": {
+      "description": "How many checks were run, skipped, or errored. Omitted when not recorded.",
+      "type": "object",
+      "properties": {
+        "run": { "type": "integer", "minimum": 0 },
+        "skipped": { "type": "integer", "minimum": 0 },
+        "errored": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["run", "skipped", "errored"],
       "additionalProperties": false
     },
     "findings": {
