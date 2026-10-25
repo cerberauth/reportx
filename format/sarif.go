@@ -56,6 +56,7 @@ type sarifRule struct {
 	ID               string         `json:"id"`
 	Name             string         `json:"name"`
 	ShortDescription sarifMessage   `json:"shortDescription"`
+	HelpURI          string         `json:"helpUri,omitempty"`
 	Properties       map[string]any `json:"properties,omitempty"`
 }
 
@@ -126,6 +127,10 @@ func (f *SARIFFormatter) Format(r *reportx.Report) ([]byte, error) {
 				Properties:       props,
 			}
 			ruleOrder = append(ruleOrder, ruleID)
+		}
+		if rule := ruleMap[ruleID]; rule.HelpURI == "" && len(finding.References) > 0 {
+			rule.HelpURI = finding.References[0]
+			ruleMap[ruleID] = rule
 		}
 	}
 	sort.Strings(ruleOrder)

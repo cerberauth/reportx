@@ -25,6 +25,8 @@ type Evidence interface {
 	IsEmpty() bool
 }
 
+// Finding is a single security issue. URL is the affected endpoint; advisory and
+// documentation links belong in References (References[0] is the SARIF rule helpUri).
 type Finding struct {
 	ID              string
 	Title           string
@@ -42,6 +44,7 @@ type Finding struct {
 	Evidence        Evidence
 	Description     string
 	Remediation     string
+	References      []string
 	FirstSeen       time.Time
 	LastSeen        time.Time
 	Status          Status

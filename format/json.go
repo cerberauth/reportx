@@ -49,6 +49,7 @@ type jsonFinding struct {
 	Evidence        any               `json:"evidence,omitempty" yaml:"evidence,omitempty"`
 	Description     string            `json:"description,omitempty" yaml:"description,omitempty"`
 	Remediation     string            `json:"remediation,omitempty" yaml:"remediation,omitempty"`
+	References      []string          `json:"references,omitempty" yaml:"references,omitempty"`
 	FirstSeen       string            `json:"first_seen,omitempty" yaml:"first_seen,omitempty"`
 	LastSeen        string            `json:"last_seen,omitempty" yaml:"last_seen,omitempty"`
 	Status          reportx.Status    `json:"status" yaml:"status"`
@@ -123,6 +124,7 @@ func toJSONFinding(f reportx.Finding) jsonFinding {
 		Parameter:       f.Parameter,
 		Description:     f.Description,
 		Remediation:     f.Remediation,
+		References:      f.References,
 		Status:          f.Status,
 		FingerprintHash: f.FingerprintHash,
 		Tags:            f.Tags,

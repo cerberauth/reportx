@@ -200,6 +200,14 @@ func writeHTMLFinding(buf *bytes.Buffer, f reportx.Finding, color, referrerTag s
 	if f.Remediation != "" {
 		fmt.Fprintf(buf, "<div class=\"prose\"><h4>Remediation</h4><p>%s</p></div>\n", html.EscapeString(f.Remediation))
 	}
+	if len(f.References) > 0 {
+		buf.WriteString("<div class=\"prose\"><h4>References</h4><ul>\n")
+		for _, ref := range f.References {
+			e := html.EscapeString(ref)
+			fmt.Fprintf(buf, "<li><a href=\"%s\">%s</a></li>\n", e, e)
+		}
+		buf.WriteString("</ul></div>\n")
+	}
 	switch ev := f.Evidence.(type) {
 	case *evidence.HTTPEvidence:
 		if !ev.IsEmpty() {

@@ -24,7 +24,7 @@
     "cwe_name": { "type": "string" },
     "owasp_top10": { "type": "string" },
     "capec_id": { "type": "string" },
-    "url": { "type": "string" },
+    "url": { "type": "string", "description": "The affected endpoint." },
     "parameter": { "type": "string" },
     "evidence": {
       "description": "Either structured HTTP evidence or arbitrary custom evidence data.",
@@ -56,6 +56,11 @@
     },
     "description": { "type": "string" },
     "remediation": { "type": "string" },
+    "references": {
+      "description": "Advisory or documentation links. The affected endpoint is in url.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
     "first_seen": { "type": "string", "format": "date-time" },
     "last_seen": { "type": "string", "format": "date-time" },
     "status": {

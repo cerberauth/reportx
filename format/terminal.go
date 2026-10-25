@@ -224,6 +224,12 @@ func (f *TerminalFormatter) writeFinding(w *bytes.Buffer, fi reportx.Finding) {
 			fmt.Fprintf(w, "      %s\n", line)
 		}
 	}
+	if len(fi.References) > 0 {
+		fmt.Fprintf(w, "\n    %s\n", f.bold("References"))
+		for _, ref := range fi.References {
+			fmt.Fprintf(w, "      %s\n", ref)
+		}
+	}
 	fmt.Fprintln(w)
 }
 
