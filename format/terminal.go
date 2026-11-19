@@ -171,6 +171,9 @@ func (f *TerminalFormatter) writeFinding(w *bytes.Buffer, fi reportx.Finding) {
 	if cwe != "" {
 		fmt.Fprintf(w, "    %s  %s\n", f.dim("CWE:      "), cwe)
 	}
+	if fi.Confidence != "" {
+		fmt.Fprintf(w, "    %s  %s\n", f.dim("Confidence:"), string(fi.Confidence))
+	}
 	if fi.CVSS40Score > 0 {
 		fmt.Fprintf(w, "    %s  %.1f  %s\n", f.dim("CVSS 4.0: "), fi.CVSS40Score, fi.CVSS40Vector)
 	} else if fi.CVSS31Score > 0 {

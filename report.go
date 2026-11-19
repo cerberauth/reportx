@@ -73,6 +73,34 @@ func (r *Report) FindingsBySeverity(s Severity) []Finding {
 	return out
 }
 
+// FindingsByConfidence returns the findings with exactly the given confidence;
+// pass "" to select findings whose confidence is unspecified.
+func (r *Report) FindingsByConfidence(c Confidence) []Finding {
+	var out []Finding
+	for _, f := range r.Findings {
+		if f.Confidence == c {
+			out = append(out, f)
+		}
+	}
+	return out
+}
+
+// FindingsAtLeast returns the findings at least as certain as min. Findings
+// with unspecified confidence are kept (see Confidence.AtLeast).
+func (r *Report) FindingsAtLeast(min Confidence) []Finding {
+	return filterConfidence(r.Findings, min)
+}
+
+func filterConfidence(findings []Finding, min Confidence) []Finding {
+	out := make([]Finding, 0, len(findings))
+	for _, f := range findings {
+		if f.Confidence.AtLeast(min) {
+			out = append(out, f)
+		}
+	}
+	return out
+}
+
 type Formatter interface {
 	Format(r *Report) ([]byte, error)
 	MediaType() string
@@ -189,6 +217,7 @@ type Builder struct {
 	coverage    Coverage
 	enrichFunc  EnrichFunc
 	dedupFunc   DedupFunc
+	minConf     Confidence
 }
 
 func NewBuilder() *Builder {
@@ -241,6 +270,13 @@ func (b *Builder) Deduplicate(fn DedupFunc) *Builder {
 	return b
 }
 
+// MinConfidence drops findings less certain than c from the built report.
+// Findings with unspecified confidence are kept.
+func (b *Builder) MinConfidence(c Confidence) *Builder {
+	b.minConf = c
+	return b
+}
+
 func (b *Builder) Build(ctx context.Context) (*Report, error) {
 	_, span := tracer.Start(ctx, "reportx.Build",
 		trace.WithAttributes(
@@ -260,6 +296,10 @@ func (b *Builder) Build(ctx context.Context) (*Report, error) {
 
 	if b.dedupFunc != nil {
 		findings = b.dedupFunc(findings)
+	}
+
+	if b.minConf != "" {
+		findings = filterConfidence(findings, b.minConf)
 	}
 
 	var scanErrors []ScanError

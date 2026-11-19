@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.cerberauth.com/reportx/v0.4.0/finding.schema.json",
+  "$id": "https://schemas.cerberauth.com/reportx/v0.5.0/finding.schema.json",
   "title": "reportx Finding",
   "description": "A single finding as emitted by reportx's JSON formatter (report findings array) and JSONL formatter (one per line).",
   "type": "object",
@@ -15,6 +15,11 @@
     "severity": {
       "type": "string",
       "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["confirmed", "firm", "tentative"],
+      "description": "How sure the producer is that the finding is real. Omitted when unspecified."
     },
     "cvss31_score": { "type": "number", "minimum": 0, "maximum": 10 },
     "cvss31_vector": { "type": "string" },

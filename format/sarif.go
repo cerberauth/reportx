@@ -67,6 +67,7 @@ type sarifMessage struct {
 type sarifResult struct {
 	RuleID              string            `json:"ruleId"`
 	Level               string            `json:"level"`
+	Rank                float64           `json:"rank,omitempty"`
 	Message             sarifMessage      `json:"message"`
 	Locations           []sarifLocation   `json:"locations,omitempty"`
 	PartialFingerprints map[string]string `json:"partialFingerprints,omitempty"`
@@ -93,6 +94,21 @@ func sarifLevel(s reportx.Severity) string {
 		return "warning"
 	default:
 		return "note"
+	}
+}
+
+// sarifRank maps confidence to a SARIF result rank (0-100, higher is more
+// certain); 0 means unspecified and is omitted.
+func sarifRank(c reportx.Confidence) float64 {
+	switch c {
+	case reportx.ConfidenceConfirmed:
+		return 100
+	case reportx.ConfidenceFirm:
+		return 70
+	case reportx.ConfidenceTentative:
+		return 30
+	default:
+		return 0
 	}
 }
 
@@ -163,6 +179,10 @@ func (f *SARIFFormatter) Format(r *reportx.Report) ([]byte, error) {
 			}
 		}
 		props := map[string]any{}
+		if finding.Confidence != "" {
+			result.Rank = sarifRank(finding.Confidence)
+			props["confidence"] = string(finding.Confidence)
+		}
 		if finding.CVSS40Score > 0 {
 			props["security-severity"] = fmt.Sprintf("%.1f", finding.CVSS40Score)
 		} else if finding.CVSS31Score > 0 {

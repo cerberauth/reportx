@@ -32,7 +32,7 @@ data, err := format.NewJSONFormatter().Format(report)
 
 ```json
 {
-  "$schema": "https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json",
+  "$schema": "https://schemas.cerberauth.com/reportx/v0.5.0/report.schema.json",
   "metadata": {
     "title": "Nightly scan",
     "tool": "MyScanner",
@@ -47,9 +47,11 @@ data, err := format.NewJSONFormatter().Format(report)
 }
 ```
 
-Output carries a `$schema` field pointing at the published [JSON Schema](https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json) — editors and validators can use it directly.
+Output carries a `$schema` field pointing at the published [JSON Schema](https://schemas.cerberauth.com/reportx/v0.5.0/report.schema.json) — editors and validators can use it directly.
 
 When the report has scan errors or coverage, top-level `errors` (`check_id`, `resource`, `message`) and `coverage` (`run`, `skipped`, `errored`) objects are added; they are omitted otherwise.
+
+A finding's `confidence` (`confirmed`, `firm` or `tentative`) is emitted when set, and omitted otherwise. The same applies to YAML and JSONL, and the terminal, Markdown and HTML formatters show it as a "Confidence" field.
 
 Best for: REST APIs, dashboards, programmatic processing.
 
@@ -69,7 +71,7 @@ Best for: config-driven pipelines, GitOps workflows, human-edited reports.
 
 ## JSONL
 
-One JSON object per line (newline-delimited JSON). Each line is a `Finding`, tagged with its own `$schema` field pointing at the [Finding schema](https://schemas.cerberauth.com/reportx/v0.4.0/finding.schema.json).
+One JSON object per line (newline-delimited JSON). Each line is a `Finding`, tagged with its own `$schema` field pointing at the [Finding schema](https://schemas.cerberauth.com/reportx/v0.5.0/finding.schema.json).
 
 ```go
 data, err := format.NewJSONLFormatter().Format(report)
@@ -96,6 +98,8 @@ Severity mapping:
 | critical, high | `error` |
 | medium | `warning` |
 | low, info | `note` |
+
+Confidence maps to the result's `rank` (confirmed 100, firm 70, tentative 30) and `properties.confidence`, so code-scanning views can sort on it; both are omitted when confidence is unspecified.
 
 Scan errors become `invocations[0].toolExecutionNotifications` (level `error`, `associatedRule.id` = check ID, location = resource) and `executionSuccessful` is `false`; coverage counts go to the run's `properties.coverage`.
 

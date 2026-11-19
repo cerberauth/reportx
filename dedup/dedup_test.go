@@ -99,3 +99,14 @@ func TestDeduplicateSetsHash(t *testing.T) {
 		}
 	}
 }
+
+func TestFingerprintIgnoresConfidence(t *testing.T) {
+	f := reportx.Finding{CWEID: "CWE-89", URL: "https://api.example.com/a", Parameter: "id"}
+	base := dedup.Fingerprint(&f)
+	for _, c := range []reportx.Confidence{reportx.ConfidenceConfirmed, reportx.ConfidenceFirm, reportx.ConfidenceTentative} {
+		f.Confidence = c
+		if got := dedup.Fingerprint(&f); got != base {
+			t.Errorf("fingerprint changed with confidence %q", c)
+		}
+	}
+}
