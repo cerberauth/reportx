@@ -14,6 +14,7 @@ type Finding struct {
 
     // Risk scoring
     Severity     Severity // critical | high | medium | low | info
+    Confidence   Confidence // confirmed | firm | tentative; empty = unspecified. Not part of the fingerprint
     CVSS31Score  float64  // base score 0–10
     CVSS31Vector string   // e.g. "CVSS:3.1/AV:N/AC:L/..."
     CVSS40Score  float64  // base score 0–10
@@ -140,6 +141,12 @@ func (r *Report) SeverityCounts() map[Severity]int
 
 // Filter findings to a single severity band.
 func (r *Report) FindingsBySeverity(s Severity) []Finding
+
+// Findings with exactly this confidence ("" selects unspecified ones).
+func (r *Report) FindingsByConfidence(c Confidence) []Finding
+
+// Findings at least as certain as min; unspecified confidence is kept.
+func (r *Report) FindingsAtLeast(min Confidence) []Finding
 ```
 
 #### Errors and coverage
@@ -174,6 +181,10 @@ func (b *Builder) Enrich(fn EnrichFunc) *Builder
 // Deduplicate computes fingerprints and drops duplicates.
 // Pass dedup.Deduplicate from the dedup sub-package.
 func (b *Builder) Deduplicate(fn DedupFunc) *Builder
+
+// MinConfidence drops findings less certain than c. Findings with
+// unspecified confidence are kept.
+func (b *Builder) MinConfidence(c Confidence) *Builder
 
 // Build validates input and constructs the Report.
 // ScanDate defaults to time.Now() when not set.

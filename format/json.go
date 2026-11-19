@@ -15,8 +15,8 @@ func NewJSONFormatter() *JSONFormatter { return &JSONFormatter{} }
 // ReportSchemaURL and FindingSchemaURL point at the JSON Schemas published
 // for reportx's JSON and JSONL output on schemas.cerberauth.com.
 const (
-	ReportSchemaURL  = "https://schemas.cerberauth.com/reportx/v0.4.0/report.schema.json"
-	FindingSchemaURL = "https://schemas.cerberauth.com/reportx/v0.4.0/finding.schema.json"
+	ReportSchemaURL  = "https://schemas.cerberauth.com/reportx/v0.5.0/report.schema.json"
+	FindingSchemaURL = "https://schemas.cerberauth.com/reportx/v0.5.0/finding.schema.json"
 )
 
 type jsonEvidence struct {
@@ -32,30 +32,31 @@ type jsonEvidence struct {
 }
 
 type jsonFinding struct {
-	Schema          string            `json:"$schema,omitempty" yaml:"$schema,omitempty"`
-	ID              string            `json:"id" yaml:"id"`
-	Title           string            `json:"title" yaml:"title"`
-	Severity        reportx.Severity  `json:"severity" yaml:"severity"`
-	CVSS31Score     float64           `json:"cvss31_score,omitempty" yaml:"cvss31_score,omitempty"`
-	CVSS31Vector    string            `json:"cvss31_vector,omitempty" yaml:"cvss31_vector,omitempty"`
-	CVSS40Score     float64           `json:"cvss40_score,omitempty" yaml:"cvss40_score,omitempty"`
-	CVSS40Vector    string            `json:"cvss40_vector,omitempty" yaml:"cvss40_vector,omitempty"`
-	CWEID           string            `json:"cwe_id,omitempty" yaml:"cwe_id,omitempty"`
-	CWEName         string            `json:"cwe_name,omitempty" yaml:"cwe_name,omitempty"`
-	OwaspTop10      string            `json:"owasp_top10,omitempty" yaml:"owasp_top10,omitempty"`
-	CAPECID         string            `json:"capec_id,omitempty" yaml:"capec_id,omitempty"`
-	URL             string            `json:"url,omitempty" yaml:"url,omitempty"`
-	Parameter       string            `json:"parameter,omitempty" yaml:"parameter,omitempty"`
-	Evidence        any               `json:"evidence,omitempty" yaml:"evidence,omitempty"`
-	Description     string            `json:"description,omitempty" yaml:"description,omitempty"`
-	Remediation     string            `json:"remediation,omitempty" yaml:"remediation,omitempty"`
-	References      []string          `json:"references,omitempty" yaml:"references,omitempty"`
-	FirstSeen       string            `json:"first_seen,omitempty" yaml:"first_seen,omitempty"`
-	LastSeen        string            `json:"last_seen,omitempty" yaml:"last_seen,omitempty"`
-	Status          reportx.Status    `json:"status" yaml:"status"`
-	FingerprintHash string            `json:"fingerprint_hash,omitempty" yaml:"fingerprint_hash,omitempty"`
-	Tags            []string          `json:"tags,omitempty" yaml:"tags,omitempty"`
-	Extra           map[string]string `json:"extra,omitempty" yaml:"extra,omitempty"`
+	Schema          string             `json:"$schema,omitempty" yaml:"$schema,omitempty"`
+	ID              string             `json:"id" yaml:"id"`
+	Title           string             `json:"title" yaml:"title"`
+	Severity        reportx.Severity   `json:"severity" yaml:"severity"`
+	Confidence      reportx.Confidence `json:"confidence,omitempty" yaml:"confidence,omitempty"`
+	CVSS31Score     float64            `json:"cvss31_score,omitempty" yaml:"cvss31_score,omitempty"`
+	CVSS31Vector    string             `json:"cvss31_vector,omitempty" yaml:"cvss31_vector,omitempty"`
+	CVSS40Score     float64            `json:"cvss40_score,omitempty" yaml:"cvss40_score,omitempty"`
+	CVSS40Vector    string             `json:"cvss40_vector,omitempty" yaml:"cvss40_vector,omitempty"`
+	CWEID           string             `json:"cwe_id,omitempty" yaml:"cwe_id,omitempty"`
+	CWEName         string             `json:"cwe_name,omitempty" yaml:"cwe_name,omitempty"`
+	OwaspTop10      string             `json:"owasp_top10,omitempty" yaml:"owasp_top10,omitempty"`
+	CAPECID         string             `json:"capec_id,omitempty" yaml:"capec_id,omitempty"`
+	URL             string             `json:"url,omitempty" yaml:"url,omitempty"`
+	Parameter       string             `json:"parameter,omitempty" yaml:"parameter,omitempty"`
+	Evidence        any                `json:"evidence,omitempty" yaml:"evidence,omitempty"`
+	Description     string             `json:"description,omitempty" yaml:"description,omitempty"`
+	Remediation     string             `json:"remediation,omitempty" yaml:"remediation,omitempty"`
+	References      []string           `json:"references,omitempty" yaml:"references,omitempty"`
+	FirstSeen       string             `json:"first_seen,omitempty" yaml:"first_seen,omitempty"`
+	LastSeen        string             `json:"last_seen,omitempty" yaml:"last_seen,omitempty"`
+	Status          reportx.Status     `json:"status" yaml:"status"`
+	FingerprintHash string             `json:"fingerprint_hash,omitempty" yaml:"fingerprint_hash,omitempty"`
+	Tags            []string           `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Extra           map[string]string  `json:"extra,omitempty" yaml:"extra,omitempty"`
 }
 
 type jsonMetadata struct {
@@ -112,6 +113,7 @@ func toJSONFinding(f reportx.Finding) jsonFinding {
 		ID:              f.ID,
 		Title:           f.Title,
 		Severity:        f.Severity,
+		Confidence:      f.Confidence,
 		CVSS31Score:     f.CVSS31Score,
 		CVSS31Vector:    f.CVSS31Vector,
 		CVSS40Score:     f.CVSS40Score,

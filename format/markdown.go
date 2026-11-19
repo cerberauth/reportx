@@ -123,6 +123,9 @@ func writeFindingMD(buf *bytes.Buffer, f reportx.Finding, referrerTag string) {
 	if cweCell != "" {
 		fmt.Fprintf(buf, "| CWE | %s |\n", cweCell)
 	}
+	if f.Confidence != "" {
+		fmt.Fprintf(buf, "| Confidence | %s |\n", string(f.Confidence))
+	}
 	if f.CVSS40Score > 0 {
 		fmt.Fprintf(buf, "| CVSS 4.0 | %.1f |\n", f.CVSS40Score)
 	} else if f.CVSS31Score > 0 {

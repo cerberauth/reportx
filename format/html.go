@@ -170,6 +170,7 @@ func writeHTMLFinding(buf *bytes.Buffer, f reportx.Finding, color, referrerTag s
 		cwe = fmt.Sprintf("%s \u2013 %s", f.CWEID, f.CWEName)
 	}
 	writeHTMLDT(buf, "CWE", cwe)
+	writeHTMLDT(buf, "Confidence", string(f.Confidence))
 
 	var cvss string
 	if f.CVSS40Score > 0 {
