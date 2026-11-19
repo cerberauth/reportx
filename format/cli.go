@@ -17,6 +17,8 @@ const (
 	FormatMarkdown FormatName = "markdown"
 	FormatHTML     FormatName = "html"
 	FormatTerminal FormatName = "terminal"
+	FormatJUnit    FormatName = "junit"
+	FormatGitLab   FormatName = "gitlab"
 )
 
 var FormatNames = []FormatName{
@@ -27,6 +29,8 @@ var FormatNames = []FormatName{
 	FormatMarkdown,
 	FormatHTML,
 	FormatTerminal,
+	FormatJUnit,
+	FormatGitLab,
 }
 
 func NewFormatter(name string) (Formatter, error) {
@@ -45,8 +49,12 @@ func NewFormatter(name string) (Formatter, error) {
 		return NewHTMLFormatter(), nil
 	case FormatTerminal, "text", "plain":
 		return NewTerminalFormatter(), nil
+	case FormatJUnit:
+		return NewJUnitFormatter(), nil
+	case FormatGitLab:
+		return NewGitLabFormatter(), nil
 	default:
-		return nil, fmt.Errorf("unknown format %q: valid values are json, yaml, jsonl, sarif, markdown, html, terminal", name)
+		return nil, fmt.Errorf("unknown format %q: valid values are json, yaml, jsonl, sarif, markdown, html, terminal, junit, gitlab", name)
 	}
 }
 
@@ -59,7 +67,7 @@ type CLIFlags struct {
 func RegisterFlags(fs *flag.FlagSet) *CLIFlags {
 	f := &CLIFlags{}
 	fs.StringVar(&f.Format, "format", "terminal",
-		`output format: json | yaml | jsonl | sarif | markdown | html | terminal`)
+		`output format: json | yaml | jsonl | sarif | markdown | html | terminal | junit | gitlab`)
 	fs.StringVar(&f.Output, "output", "",
 		`file path to write the report (default: stdout)`)
 	fs.BoolVar(&f.NoColor, "no-color", false,
