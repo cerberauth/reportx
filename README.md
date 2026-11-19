@@ -65,6 +65,8 @@ func main() {
 | SARIF | `application/sarif+json` | `.sarif.json` | GitHub Code Scanning, IDEs |
 | Markdown | `text/markdown` | `.md` | PR comments, wikis |
 | HTML | `text/html` | `.html` | Standalone reports, email |
+| JUnit XML | `application/xml` | `.junit.xml` | CI test-result views |
+| GitLab | `application/json` | `.gl-dast-report.json` | GitLab merge requests, security dashboard |
 
 ### JSON
 

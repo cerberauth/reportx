@@ -24,6 +24,8 @@ func TestNewFormatterAllNames(t *testing.T) {
 		{"terminal", "text/plain", ".txt"},
 		{"text", "text/plain", ".txt"},
 		{"plain", "text/plain", ".txt"},
+		{"junit", "application/xml", ".junit.xml"},
+		{"gitlab", "application/json", ".gl-dast-report.json"},
 	}
 	for _, tc := range cases {
 		f, err := format.NewFormatter(tc.name)
@@ -54,7 +56,7 @@ func TestNewFormatterErrorMessageContainsValidNames(t *testing.T) {
 		t.Fatal("expected error")
 	}
 	msg := err.Error()
-	for _, name := range []string{"json", "jsonl", "sarif", "markdown", "html", "terminal"} {
+	for _, name := range []string{"json", "jsonl", "sarif", "markdown", "html", "terminal", "junit", "gitlab"} {
 		if !containsStr(msg, name) {
 			t.Errorf("error message should mention %q, got: %s", name, msg)
 		}

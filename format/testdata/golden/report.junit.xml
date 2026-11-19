@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="https://api.example.com" tests="21" failures="6" errors="1" skipped="3">
+  <testsuite name="https://api.example.com" tests="21" failures="6" errors="1" skipped="3" time="0" timestamp="2024-01-15T12:00:00">
+    <properties>
+      <property name="tool" value="TestScanner 1.0.0"></property>
+      <property name="title" value="Golden Report"></property>
+    </properties>
+    <testcase name="SQL Injection in login endpoint - https://api.example.com/auth/login (username)" classname="CWE-89" time="0">
+      <failure message="SQL Injection in login endpoint" type="critical">Title: SQL Injection in login endpoint&#xA;Severity: critical&#xA;CWE: CWE-89&#xA;URL: https://api.example.com/auth/login&#xA;Parameter: username&#xA;&#xA;Description:&#xA;The login endpoint is vulnerable to SQL injection via the username parameter.&#xA;&#xA;Remediation:&#xA;Use parameterized queries or prepared statements.&#xA;</failure>
+    </testcase>
+    <testcase name="Reflected XSS in search parameter - https://api.example.com/search (q)" classname="CWE-79" time="0">
+      <failure message="Reflected XSS in search parameter" type="high">Title: Reflected XSS in search parameter&#xA;Severity: high&#xA;CWE: CWE-79&#xA;URL: https://api.example.com/search&#xA;Parameter: q&#xA;&#xA;Description:&#xA;User-supplied input in the &#39;q&#39; parameter is reflected without encoding.&#xA;&#xA;Remediation:&#xA;HTML-encode all output, apply Content-Security-Policy.&#xA;</failure>
+    </testcase>
+    <testcase name="Path Traversal in file download - https://api.example.com/files/download (path)" classname="CWE-22" time="0">
+      <skipped message="mitigated"></skipped>
+      <system-out>Title: Path Traversal in file download&#xA;Severity: high&#xA;CWE: CWE-22&#xA;URL: https://api.example.com/files/download&#xA;Parameter: path&#xA;&#xA;Description:&#xA;The file download endpoint does not sanitize path separators.&#xA;&#xA;Remediation:&#xA;Validate and canonicalize paths; restrict to an allowed directory.&#xA;</system-out>
+    </testcase>
+    <testcase name="SQL Injection in login endpoint (duplicate) - https://api.example.com/auth/login (username)" classname="CWE-89" time="0">
+      <failure message="SQL Injection in login endpoint (duplicate)" type="critical">Title: SQL Injection in login endpoint (duplicate)&#xA;Severity: critical&#xA;CWE: CWE-89&#xA;URL: https://api.example.com/auth/login&#xA;Parameter: username&#xA;&#xA;Description:&#xA;Duplicate of finding-001 detected by a different scan.&#xA;</failure>
+    </testcase>
+    <testcase name="Missing CSRF protection on state-changing endpoints - https://api.example.com/account/update" classname="CWE-352" time="0">
+      <skipped message="accepted_risk"></skipped>
+      <system-out>Title: Missing CSRF protection on state-changing endpoints&#xA;Severity: medium&#xA;CWE: CWE-352&#xA;URL: https://api.example.com/account/update&#xA;&#xA;Description:&#xA;POST endpoints lack CSRF tokens.&#xA;&#xA;Remediation:&#xA;Implement synchronizer token pattern or SameSite cookie attribute.&#xA;</system-out>
+    </testcase>
+    <testcase name="Sensitive data exposed in API response - https://api.example.com/users/profile" classname="CWE-200" time="0">
+      <failure message="Sensitive data exposed in API response" type="low">Title: Sensitive data exposed in API response&#xA;Severity: low&#xA;CWE: CWE-200&#xA;URL: https://api.example.com/users/profile&#xA;&#xA;Description:&#xA;The profile endpoint returns internal fields (e.g. password_hash).&#xA;&#xA;Remediation:&#xA;Restrict response fields to only what the client needs.&#xA;</failure>
+    </testcase>
+    <testcase name="Server-Side Request Forgery via webhook URL - https://api.example.com/webhooks (url)" classname="CWE-918" time="0">
+      <failure message="Server-Side Request Forgery via webhook URL" type="high">Title: Server-Side Request Forgery via webhook URL&#xA;Severity: high&#xA;CWE: CWE-918&#xA;URL: https://api.example.com/webhooks&#xA;Parameter: url&#xA;&#xA;Description:&#xA;The webhook registration endpoint makes HTTP requests to attacker-controlled URLs.&#xA;&#xA;Remediation:&#xA;Validate and allowlist permitted webhook destinations.&#xA;</failure>
+    </testcase>
+    <testcase name="Informational: Server version disclosed in headers - https://api.example.com/" classname="finding-008" time="0">
+      <skipped message="false_positive"></skipped>
+      <system-out>Title: Informational: Server version disclosed in headers&#xA;Severity: info&#xA;URL: https://api.example.com/&#xA;&#xA;Description:&#xA;The Server HTTP response header discloses the web server version.&#xA;&#xA;Remediation:&#xA;Configure the web server to suppress or obfuscate the Server header.&#xA;</system-out>
+    </testcase>
+    <testcase name="Rich Finding - https://api.example.com/users?id=1 (id)" classname="CWE-89" time="0">
+      <failure message="Rich Finding" type="critical">Title: Rich Finding&#xA;Severity: critical&#xA;CWE: CWE-89&#xA;URL: https://api.example.com/users?id=1&#xA;Parameter: id&#xA;&#xA;Description:&#xA;SQL injection via the id parameter.&#xA;&#xA;Remediation:&#xA;Use parameterized queries.&#xA;&#xA;References:&#xA;https://example.com/advisory/42&#xA;</failure>
+    </testcase>
+    <testcase name="check-timeout - https://api.example.com/slow" classname="check-timeout" time="0">
+      <error message="request timed out" type="scan_error">request timed out</error>
+    </testcase>
+    <testcase name="check 1 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 2 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 3 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 4 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 5 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 6 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 7 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 8 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 9 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 10 passed" classname="coverage" time="0"></testcase>
+    <testcase name="check 11 passed" classname="coverage" time="0"></testcase>
+  </testsuite>
+</testsuites>

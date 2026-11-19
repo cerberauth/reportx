@@ -1,0 +1,354 @@
+{
+  "version": "15.2.5",
+  "scan": {
+    "analyzer": {
+      "id": "testscanner",
+      "name": "TestScanner",
+      "version": "1.0.0",
+      "vendor": {
+        "name": "TestScanner"
+      }
+    },
+    "scanner": {
+      "id": "testscanner",
+      "name": "TestScanner",
+      "version": "1.0.0",
+      "vendor": {
+        "name": "TestScanner"
+      }
+    },
+    "start_time": "2024-01-15T12:00:00",
+    "end_time": "2024-01-15T12:00:00",
+    "status": "failure",
+    "type": "dast",
+    "scanned_resources": [
+      {
+        "method": "GET",
+        "url": "https://api.example.com",
+        "type": "url"
+      },
+      {
+        "method": "POST",
+        "url": "https://api.example.com/auth/login",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/search",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/files/download",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/auth/login",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/account/update",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/users/profile",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/webhooks",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/",
+        "type": "url"
+      },
+      {
+        "method": "GET",
+        "url": "https://api.example.com/users?id=1",
+        "type": "url"
+      }
+    ],
+    "messages": [
+      {
+        "level": "warn",
+        "value": "check-timeout: request timed out (https://api.example.com/slow)"
+      }
+    ]
+  },
+  "vulnerabilities": [
+    {
+      "id": "finding-001",
+      "name": "SQL Injection in login endpoint",
+      "description": "The login endpoint is vulnerable to SQL injection via the username parameter.",
+      "severity": "Critical",
+      "solution": "Use parameterized queries or prepared statements.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-89",
+          "value": "89",
+          "url": "https://cwe.mitre.org/data/definitions/89.html"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "TestScanner",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        }
+      ],
+      "evidence": {
+        "source": {
+          "id": "testscanner",
+          "name": "TestScanner"
+        },
+        "request": {
+          "headers": [],
+          "method": "POST",
+          "url": "https://api.example.com/auth/login",
+          "body": "{\"username\":\"' OR 1=1--\"}"
+        },
+        "response": {
+          "headers": [],
+          "reason_phrase": "Internal Server Error",
+          "status_code": 500,
+          "body": "SQLite error: syntax error"
+        }
+      },
+      "location": {
+        "hostname": "https://api.example.com",
+        "method": "POST",
+        "param": "username",
+        "path": "/auth/login"
+      }
+    },
+    {
+      "id": "finding-002",
+      "name": "Reflected XSS in search parameter",
+      "description": "User-supplied input in the 'q' parameter is reflected without encoding.",
+      "severity": "High",
+      "solution": "HTML-encode all output, apply Content-Security-Policy.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-79",
+          "value": "79",
+          "url": "https://cwe.mitre.org/data/definitions/79.html"
+        }
+      ],
+      "evidence": {
+        "source": {
+          "id": "testscanner",
+          "name": "TestScanner"
+        },
+        "request": {
+          "headers": [],
+          "method": "GET",
+          "url": "https://api.example.com/search?q=%3Cscript%3Ealert(1)%3C/script%3E"
+        },
+        "response": {
+          "headers": [],
+          "reason_phrase": "OK",
+          "status_code": 200,
+          "body": "\u003chtml\u003e...search: \u003cscript\u003ealert(1)\u003c/script\u003e..."
+        }
+      },
+      "location": {
+        "hostname": "https://api.example.com",
+        "method": "GET",
+        "param": "q",
+        "path": "/search"
+      }
+    },
+    {
+      "id": "finding-003",
+      "name": "Path Traversal in file download",
+      "description": "The file download endpoint does not sanitize path separators.",
+      "severity": "High",
+      "solution": "Validate and canonicalize paths; restrict to an allowed directory.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-22",
+          "value": "22",
+          "url": "https://cwe.mitre.org/data/definitions/22.html"
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "param": "path",
+        "path": "/files/download"
+      }
+    },
+    {
+      "id": "finding-004",
+      "name": "SQL Injection in login endpoint (duplicate)",
+      "description": "Duplicate of finding-001 detected by a different scan.",
+      "severity": "Critical",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-89",
+          "value": "89",
+          "url": "https://cwe.mitre.org/data/definitions/89.html"
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "param": "username",
+        "path": "/auth/login"
+      }
+    },
+    {
+      "id": "finding-005",
+      "name": "Missing CSRF protection on state-changing endpoints",
+      "description": "POST endpoints lack CSRF tokens.",
+      "severity": "Medium",
+      "solution": "Implement synchronizer token pattern or SameSite cookie attribute.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-352",
+          "value": "352",
+          "url": "https://cwe.mitre.org/data/definitions/352.html"
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "path": "/account/update"
+      }
+    },
+    {
+      "id": "finding-006",
+      "name": "Sensitive data exposed in API response",
+      "description": "The profile endpoint returns internal fields (e.g. password_hash).",
+      "severity": "Low",
+      "solution": "Restrict response fields to only what the client needs.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-200",
+          "value": "200",
+          "url": "https://cwe.mitre.org/data/definitions/200.html"
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "path": "/users/profile"
+      }
+    },
+    {
+      "id": "finding-007",
+      "name": "Server-Side Request Forgery via webhook URL",
+      "description": "The webhook registration endpoint makes HTTP requests to attacker-controlled URLs.",
+      "severity": "High",
+      "solution": "Validate and allowlist permitted webhook destinations.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-918",
+          "value": "918",
+          "url": "https://cwe.mitre.org/data/definitions/918.html"
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "param": "url",
+        "path": "/webhooks"
+      }
+    },
+    {
+      "id": "finding-008",
+      "name": "Informational: Server version disclosed in headers",
+      "description": "The Server HTTP response header discloses the web server version.",
+      "severity": "Info",
+      "solution": "Configure the web server to suppress or obfuscate the Server header.",
+      "identifiers": [
+        {
+          "type": "testscanner",
+          "name": "Informational: Server version disclosed in headers",
+          "value": "finding-008"
+        }
+      ],
+      "flags": [
+        {
+          "type": "flagged-as-likely-false-positive",
+          "origin": "TestScanner",
+          "description": "Marked as a false positive in the TestScanner report."
+        }
+      ],
+      "location": {
+        "hostname": "https://api.example.com",
+        "path": "/"
+      }
+    },
+    {
+      "id": "rich-1",
+      "name": "Rich Finding",
+      "description": "SQL injection via the id parameter.",
+      "severity": "Critical",
+      "solution": "Use parameterized queries.",
+      "identifiers": [
+        {
+          "type": "cwe",
+          "name": "CWE-89",
+          "value": "89",
+          "url": "https://cwe.mitre.org/data/definitions/89.html"
+        },
+        {
+          "type": "owasp",
+          "name": "A03:2021 – Injection",
+          "value": "A03:2021 – Injection"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "TestScanner",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://example.com/advisory/42"
+        }
+      ],
+      "evidence": {
+        "source": {
+          "id": "testscanner",
+          "name": "TestScanner"
+        },
+        "request": {
+          "headers": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ],
+          "method": "GET",
+          "url": "https://api.example.com/users?id=1%27"
+        },
+        "response": {
+          "headers": [
+            {
+              "name": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "reason_phrase": "Internal Server Error",
+          "status_code": 500,
+          "body": "SQL error"
+        }
+      },
+      "location": {
+        "hostname": "https://api.example.com",
+        "method": "GET",
+        "param": "id",
+        "path": "/users"
+      }
+    }
+  ]
+}

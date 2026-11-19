@@ -3,6 +3,7 @@ module github.com/cerberauth/reportx
 go 1.26.0
 
 require (
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	go.opentelemetry.io/otel v1.47.0
 	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.47.0
 	go.opentelemetry.io/otel/sdk v1.47.0
@@ -20,4 +21,5 @@ require (
 	go.opentelemetry.io/otel/log v1.47.0 // indirect
 	go.opentelemetry.io/otel/metric v1.47.0 // indirect
 	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 )

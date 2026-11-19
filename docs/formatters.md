@@ -17,6 +17,9 @@ All formatters live in the `format` sub-package and implement `reportx.Formatter
 | `NewTerminalFormatter()` | Terminal | `text/plain` | `.txt` |
 | `NewTerminalFormatterNoColor()` | Terminal (no ANSI) | `text/plain` | `.txt` |
 | `NewTerminalFormatterWithReferrerTag(tag)` | Terminal, URLs tagged with `?ref=tag` | `text/plain` | `.txt` |
+| `NewJUnitFormatter()` | JUnit XML | `application/xml` | `.junit.xml` |
+| `NewJUnitFormatterWithThreshold(sev)` | JUnit XML, failing from `sev` upwards | `application/xml` | `.junit.xml` |
+| `NewGitLabFormatter()` | GitLab DAST security report | `application/json` | `.gl-dast-report.json` |
 
 ---
 
@@ -107,6 +110,59 @@ Best for: GitHub Code Scanning, Azure DevOps, IDE security plugins.
 
 ---
 
+## JUnit XML
+
+JUnit XML for CI systems that render test results (GitLab, Jenkins, Azure DevOps, CircleCI, ...). One `<testsuite>` named after the report target, with:
+
+- one `<testcase>` per finding, with `classname` the CWE ID (falling back to the finding ID) and `name` the title plus affected URL and parameter;
+- one `<testcase>` with an `<error>` per scan error;
+- when the report has [coverage](api-reference.md#errors-and-coverage), one passing `<testcase>` for each check that ran without producing a finding (`Coverage.Run` minus the number of findings).
+
+JUnit has no severity concept, so the formatter's `FailOn` option sets the failing threshold: findings at or above it get a `<failure message="title" type="severity">` whose body carries the title, severity, remediation and other context. Findings below it are passing test cases. The report has no fail threshold of its own yet, so the default (`NewJUnitFormatter()`) fails every finding. Findings that are not `active` (false positive, accepted risk, mitigated) are reported as `<skipped>`.
+
+```go
+// Fail the build only on high and critical findings
+data, err := format.NewJUnitFormatterWithThreshold(reportx.SeverityHigh).Format(report)
+```
+
+Best for: CI test-result tabs and trend graphs.
+
+---
+
+## GitLab security report
+
+A GitLab DAST report, so findings appear in merge requests and the security dashboard when the file is published as a `dast` report artifact:
+
+```yaml
+artifacts:
+  reports:
+    dast: gl-dast-report.json
+```
+
+```go
+data, err := format.NewGitLabFormatter().Format(report)
+```
+
+The output conforms to version **15.2.5** of GitLab's [`dast-report-format.json`](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/v15.2.5/dist/dast-report-format.json) (`format.GitLabSchemaVersion`); tests validate it against a pinned copy of that schema.
+
+| reportx | GitLab |
+|---------|--------|
+| severity | `severity` (`Critical`, `High`, `Medium`, `Low`, `Info`; anything else `Unknown`) |
+| `CWEID`, `OwaspTop10` | `identifiers` (a finding with neither gets one from its ID) |
+| `URL`, `Parameter`, HTTP evidence method | `location` (`hostname`, `path`, `param`, `method`) |
+| `Remediation` | `solution` |
+| `References` | `links` |
+| `CVSS31Vector`, `CVSS40Vector` | `cvss_vectors` |
+| structured HTTP evidence | `evidence.request` / `evidence.response` |
+| `StatusFalsePositive` | `flags` (`flagged-as-likely-false-positive`) |
+| scan errors | `scan.messages` (level `warn`), and `scan.status` becomes `failure` |
+
+`scan.scanned_resources` lists the report target and every finding URL.
+
+Best for: GitLab merge request widgets and the vulnerability report.
+
+---
+
 ## Markdown
 
 Groups findings by severity (critical → info). Each finding renders as a `###` heading with a metadata table and collapsible `<details>` block for evidence.
@@ -175,7 +231,7 @@ Use `format.NewFormatter(name string)` to resolve a formatter from a string — 
 f, err := format.NewFormatter("sarif")  // returns *SARIFFormatter
 ```
 
-Valid names: `json`, `yaml` (alias: `yml`), `jsonl`, `sarif`, `markdown` (alias: `md`), `html`, `terminal` (aliases: `text`, `plain`).
+Valid names: `json`, `yaml` (alias: `yml`), `jsonl`, `sarif`, `markdown` (alias: `md`), `html`, `terminal` (aliases: `text`, `plain`), `junit`, `gitlab`.
 
 ---
 
@@ -198,6 +254,6 @@ Registered flags:
 
 | Flag | Default | Description |
 |------|---------|-------------|
-| `-format` | `terminal` | `json \| yaml \| jsonl \| sarif \| markdown \| html \| terminal` |
+| `-format` | `terminal` | `json \| yaml \| jsonl \| sarif \| markdown \| html \| terminal \| junit \| gitlab` |
 | `-output` | `""` (stdout) | file path to write the report |
 | `-no-color` | `false` | disable ANSI colors in terminal output |
